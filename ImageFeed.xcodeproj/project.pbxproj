@@ -16,6 +16,7 @@
 		C14538E72B93C1B7003535E5 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14538E62B93C1B7003535E5 /* ImagesListCell.swift */; };
 		C14538EC2B93D6AC003535E5 /* SFProDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C14538EA2B93D6AC003535E5 /* SFProDisplay-Regular.ttf */; };
 		C14538ED2B93D6AC003535E5 /* SFProDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C14538EB2B93D6AC003535E5 /* SFProDisplay-Bold.ttf */; };
+		C17BDBBA2B97AF7C00565288 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17BDBB92B97AF7C00565288 /* UIView+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		C14538E62B93C1B7003535E5 /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
 		C14538EA2B93D6AC003535E5 /* SFProDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProDisplay-Regular.ttf"; sourceTree = "<group>"; };
 		C14538EB2B93D6AC003535E5 /* SFProDisplay-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProDisplay-Bold.ttf"; sourceTree = "<group>"; };
+		C17BDBB92B97AF7C00565288 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 			children = (
 				C14538E82B93C1E8003535E5 /* ImagesList */,
 				C145388D2B9122E1003535E5 /* Main.storyboard */,
+				C17BDBB82B97AF4F00565288 /* Extensions */,
 				C14538872B9122E1003535E5 /* AppDelegate.swift */,
 				C14538892B9122E1003535E5 /* SceneDelegate.swift */,
 				C14538E92B93D666003535E5 /* Fonts */,
@@ -90,6 +93,14 @@
 				C14538EA2B93D6AC003535E5 /* SFProDisplay-Regular.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		C17BDBB82B97AF4F00565288 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				C17BDBB92B97AF7C00565288 /* UIView+Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,6 +178,7 @@
 			files = (
 				C145388C2B9122E1003535E5 /* ImagesListViewController.swift in Sources */,
 				C14538E72B93C1B7003535E5 /* ImagesListCell.swift in Sources */,
+				C17BDBBA2B97AF7C00565288 /* UIView+Extensions.swift in Sources */,
 				C14538882B9122E1003535E5 /* AppDelegate.swift in Sources */,
 				C145388A2B9122E1003535E5 /* SceneDelegate.swift in Sources */,
 			);

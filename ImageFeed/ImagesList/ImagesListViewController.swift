@@ -7,9 +7,13 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController {
-    @IBOutlet private var tableView: UITableView!
-    private var dateFormatter: DateFormatter {
+final class ImagesListViewController: UIViewController {
+
+    // MARK: IB Outlets
+    @IBOutlet weak private var tableView: UITableView!
+
+    // MARK: Public Properties
+    var  dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
@@ -18,54 +22,22 @@ class ImagesListViewController: UIViewController {
         return formatter
     }
     // создаем массив чисел и возвращаем массив строк
-    private let photosName: [String] = Array(0..<20).map{ "\($0)"}
-    
+    let photosName: [String] = Array(0..<20).map{ "\($0)"}
+        
+    // MARK: Private Properties
+
+
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         tableView.delegate = self
         tableView.dataSource = self
-    }
-}
-
-extension ImagesListViewController {
-    // конфигурация ячейки
-        func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-            // получаем название картинки по индексу
-            let imageName = photosName[indexPath.row]
-            
-            // проверяем есть UIImage с таким название
-            if let image = UIImage(named: imageName) {
-                cell.cellImage.image = image
-            } else { return }
-            
-            // добавляем текущую дату
-            let currentDate = Date()
-            let dateString = dateFormatter.string(from: currentDate)
-            cell.dateLabel.text = dateString
-            
-            if indexPath.row % 2 == 0 {
-                cell.likeButton.setImage(UIImage(named: "Active"), for: .normal)
-            } else {
-                cell.likeButton.setImage(UIImage(named: "No Active"), for: .normal)
-            }
-            
-            cell.linearGradientView.linearGradient()
         }
+    
 }
 
-extension UIView {
-    func linearGradient() {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [UIColor(red: 0.10, green: 0.11, blue: 0.13, alpha: 0.00).cgColor, UIColor(red: 0.10, green: 0.11, blue: 0.13, alpha: 0.20).cgColor]
-        gradientLayer.cornerRadius = layer.cornerRadius
-        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 0, y: 1)
-        gradientLayer.frame = bounds
-        layer.insertSublayer(gradientLayer, at: 0)
-    }
-}
-
+// MARK: UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
     // определяем количество ячеек в секции таблицы
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -79,7 +51,7 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        configCell(for: imageListCell, with: indexPath) //
+        imageListCell.configCell(for: imageListCell, with: indexPath) //
         return imageListCell
     }
 }
