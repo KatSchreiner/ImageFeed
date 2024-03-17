@@ -19,6 +19,7 @@
 		C1936A302BA460F00023875A /* SF-Pro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C1936A012BA460EA0023875A /* SF-Pro.ttf */; };
 		C1936A3A2BA460F00023875A /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C1936A0B2BA460EC0023875A /* SF-Pro-Display-Regular.otf */; };
 		C1936A452BA466330023875A /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1936A442BA466330023875A /* ProfileViewController.swift */; };
+		C1936A472BA630300023875A /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1936A462BA630300023875A /* SingleImageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		C1936A012BA460EA0023875A /* SF-Pro.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro.ttf"; sourceTree = "<group>"; };
 		C1936A0B2BA460EC0023875A /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
 		C1936A442BA466330023875A /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		C1936A462BA630300023875A /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 		C14538862B9122E1003535E5 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				C1936A482BA633460023875A /* SingleImageViewController */,
 				C1CA1A812BA33F6100C77734 /* Profile */,
 				C14538E82B93C1E8003535E5 /* ImagesList */,
 				C145388D2B9122E1003535E5 /* Main.storyboard */,
@@ -115,6 +118,14 @@
 				C1936A012BA460EA0023875A /* SF-Pro.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		C1936A482BA633460023875A /* SingleImageViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C1936A462BA630300023875A /* SingleImageViewController.swift */,
+			);
+			path = SingleImageViewController;
 			sourceTree = "<group>";
 		};
 		C1CA1A812BA33F6100C77734 /* Profile */ = {
@@ -202,6 +213,7 @@
 				C1936A452BA466330023875A /* ProfileViewController.swift in Sources */,
 				C145388C2B9122E1003535E5 /* ImagesListViewController.swift in Sources */,
 				C14538E72B93C1B7003535E5 /* ImagesListCell.swift in Sources */,
+				C1936A472BA630300023875A /* SingleImageViewController.swift in Sources */,
 				C17BDBBA2B97AF7C00565288 /* UIView+Extensions.swift in Sources */,
 				C14538882B9122E1003535E5 /* AppDelegate.swift in Sources */,
 				C145388A2B9122E1003535E5 /* SceneDelegate.swift in Sources */,
