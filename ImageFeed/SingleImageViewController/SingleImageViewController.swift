@@ -7,70 +7,82 @@
 
 import UIKit
 
-final class SingleImageViewController: UIViewController, UIScrollViewDelegate {
+final class SingleImageViewController: UIViewController {
     var image: UIImage? {
         didSet {
-            guard let image, isViewLoaded else { return }
-            singleImage.image = image
-            singleImage.frame.size = image.size
+            guard isViewLoaded else { return }
+            imageView.image = image
+            guard let image = imageView.image else { return }
             rescaleAndCenterImageInScrollView(image: image)
         }
     }
     
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var singleImage: UIImageView!
+    // MARK: - IB Outlets
+    @IBOutlet private var scrollView: UIScrollView!
+    @IBOutlet private var imageView: UIImageView!
     
-
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let image = image else { return }
-        singleImage.image = image
         scrollView.delegate = self
+        
+        imageView.image = image
+        guard let image = imageView.image else { return }
+        imageView.frame.size = image.size
+        rescaleAndCenterImageInScrollView(image: image)
+        
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
-        rescaleAndCenterImageInScrollView(image: image)
+        
+        // рпедотвращаем автоматическое растягивание содержимого внутри scrollView
+        scrollView.contentInsetAdjustmentBehavior = .never
     }
     
+    // MARK: IB Actions
     @IBAction func didTapShareButton(_ sender: UIButton) {
-    let shareController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        guard let image = image else { return }
+        let shareController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         present(shareController, animated: true, completion: nil)
     }
+    
     @IBAction func tapBackButton(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
     }
     
+    // MARK: Private Methods
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
         
-        scrollView.layoutIfNeeded()
-        
+        view.layoutIfNeeded()
+        // Масштабируем изображение
         let visibleRectSize = scrollView.bounds.size
         let imageSize = image.size
-        let scrollViewSize = scrollView.contentSize
-        
-        let widthScale = imageSize.width / visibleRectSize.width
-        let heightScale = imageSize.height / visibleRectSize.height
-        
+        let widthScale = visibleRectSize.width / imageSize.width
+        let heightScale = visibleRectSize.height / imageSize.height
         let minScale = min(widthScale, heightScale)
         let scale = min(maxZoomScale, max(minZoomScale, minScale))
-        
-        self.scrollView.setZoomScale(scale, animated: false)
+        self.scrollView.setZoomScale(scale, animated: true)
         
         scrollView.layoutIfNeeded()
-        let x = (visibleRectSize.width - scrollViewSize.width) / 2
-        let y = (visibleRectSize.height - scrollViewSize.height) / 2
+        // Центрируем изображение
+        let newContentSize = scrollView.contentSize
+        let x = (newContentSize.width - visibleRectSize.width) / 2
+        let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
-
     }
 }
 
-extension SingleImageViewController {
+// MARK: - UIScrollViewDelegate
+extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        singleImage
+        imageView
     }
     
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        
+        // центрируем содержимое внутри scrollView
+        let offsetX = max((scrollView.bounds.size.width - scrollView.contentSize.width) * 0.5, 0)
+        let offsetY = max((scrollView.bounds.size.height - scrollView.contentSize.height) * 0.5, 0)
+        scrollView.contentInset = UIEdgeInsets(top: offsetY, left: offsetX, bottom: 0, right: 0)
         }
 }

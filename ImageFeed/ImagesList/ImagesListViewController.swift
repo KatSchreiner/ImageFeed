@@ -46,7 +46,6 @@ final class ImagesListViewController: UIViewController {
             super.prepare(for: segue, sender: sender)
         }
     }
-    
 }
 
 // MARK: UITableViewDataSource
@@ -68,6 +67,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
     // действия при нажатии на ячейку таблицы
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -85,6 +85,5 @@ extension ImagesListViewController: UITableViewDelegate {
         let padding = tableView.contentInset.top + tableView.contentInset.bottom
 
         return imageHeight + padding
-    
     }
 }
