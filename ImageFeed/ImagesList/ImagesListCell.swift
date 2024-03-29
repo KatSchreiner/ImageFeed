@@ -31,7 +31,7 @@ final class ImagesListCell: UITableViewCell {
         if let image = UIImage(named: imageName) {
             self.cellImage.image = image
         } else { return }
-            
+        
         // добавляем текущую дату
         let currentDate = Date()
         let dateString = controller.dateFormatter.string(from: currentDate)
