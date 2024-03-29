@@ -84,5 +84,5 @@ extension SingleImageViewController: UIScrollViewDelegate {
         let offsetX = max((scrollView.bounds.size.width - scrollView.contentSize.width) * 0.5, 0)
         let offsetY = max((scrollView.bounds.size.height - scrollView.contentSize.height) * 0.5, 0)
         scrollView.contentInset = UIEdgeInsets(top: offsetY, left: offsetX, bottom: 0, right: 0)
-        }
+    }
 }

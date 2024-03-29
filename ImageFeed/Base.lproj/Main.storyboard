@@ -113,7 +113,7 @@
                             <constraint firstItem="fMR-7L-HGL" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="CI4-rW-1VO"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" image="tab_editorial_active" id="3Ba-9t-UM2"/>
+                    <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="3Ba-9t-UM2"/>
                     <navigationItem key="navigationItem" id="Xa9-2W-Bxw"/>
                     <connections>
                         <outlet property="tableView" destination="fMR-7L-HGL" id="8Xj-eb-EnI"/>
@@ -133,10 +133,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7YE-fQ-52c">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="428" height="927"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="tmk-tK-piZ" userLabel="Image View">
-                                        <rect key="frame" x="0.0" y="0.0" width="400" height="400"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="428" height="400"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                 </subviews>
@@ -167,14 +167,14 @@
                         <viewLayoutGuide key="safeArea" id="Rlr-kW-mIu"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
+                            <constraint firstItem="7YE-fQ-52c" firstAttribute="trailing" secondItem="Rlr-kW-mIu" secondAttribute="trailing" id="1m3-wy-oMM"/>
                             <constraint firstItem="IDd-ph-8NT" firstAttribute="leading" secondItem="Rlr-kW-mIu" secondAttribute="leading" constant="9" id="9g9-Pr-X3p"/>
                             <constraint firstItem="Rlr-kW-mIu" firstAttribute="bottom" secondItem="Tk4-6P-Dhe" secondAttribute="bottom" constant="38" id="BXD-3E-cc5"/>
                             <constraint firstItem="IDd-ph-8NT" firstAttribute="top" secondItem="Rlr-kW-mIu" secondAttribute="top" constant="9" id="IBz-R1-sAm"/>
-                            <constraint firstItem="7YE-fQ-52c" firstAttribute="top" secondItem="jZv-YP-CcS" secondAttribute="top" id="RP0-Wj-fdG"/>
+                            <constraint firstItem="7YE-fQ-52c" firstAttribute="leading" secondItem="Rlr-kW-mIu" secondAttribute="leading" id="IpM-eg-lYi"/>
+                            <constraint firstItem="7YE-fQ-52c" firstAttribute="bottom" secondItem="jZv-YP-CcS" secondAttribute="bottom" id="OGR-6t-0qP"/>
+                            <constraint firstItem="7YE-fQ-52c" firstAttribute="top" secondItem="jZv-YP-CcS" secondAttribute="top" id="VK6-x4-a1d"/>
                             <constraint firstItem="Tk4-6P-Dhe" firstAttribute="centerX" secondItem="jZv-YP-CcS" secondAttribute="centerX" id="YFi-Bh-65Y"/>
-                            <constraint firstItem="7YE-fQ-52c" firstAttribute="leading" secondItem="Rlr-kW-mIu" secondAttribute="leading" id="arK-xM-vDd"/>
-                            <constraint firstItem="7YE-fQ-52c" firstAttribute="trailing" secondItem="Rlr-kW-mIu" secondAttribute="trailing" id="j0B-al-oo7"/>
-                            <constraint firstItem="7YE-fQ-52c" firstAttribute="bottom" secondItem="jZv-YP-CcS" secondAttribute="bottom" id="rwu-Zb-X3l"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="QpI-GF-K6E"/>
@@ -185,7 +185,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2A5-Mp-Q71" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1752" y="650"/>
+            <point key="canvasLocation" x="-1752.3364485981308" y="649.89200863930887"/>
         </scene>
         <!--Profile-->
         <scene sceneID="pBM-mL-RXC">
