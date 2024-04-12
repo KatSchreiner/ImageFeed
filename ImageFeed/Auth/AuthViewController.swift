@@ -8,11 +8,15 @@
 import Foundation
 import UIKit
 
+protocol AuthViewControllerDelegate: AnyObject {
+    func didAuthenticate(_ vc: AuthViewController)
+}
+
 final class AuthViewController: UIViewController {
     
-    private let showWebViewIdentifier = "ShowWebView"
     private let oauth2Service = OAuth2Service.shared
-    private let oauthService = OAuth2Service()
+    private let showWebViewIdentifier = "ShowWebView"
+    weak var  delegate: AuthViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,9 +26,10 @@ final class AuthViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showWebViewIdentifier {
             guard let webViewController = segue.destination as? WebViewViewController
-            else { fatalError("Failed to prepare for \(showWebViewIdentifier)")}
+            else {
+                fatalError("Failed to prepare for \(showWebViewIdentifier)")
+            }
             webViewController.delegate = self
-            
         } else {
             super.prepare(for: segue, sender: sender)
         }
@@ -40,12 +45,21 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        oauthService.fetchOAuthToken(code: code) { result in
-                        // Обработка результата
-                    }
+        vc.dismiss(animated: true)
+        
+        oauth2Service.fetchOAuthToken(code: code) { result in
+            switch result {
+            case .success:
+                self.delegate?.didAuthenticate(self)
+                print("Access Token")
+            case .failure:
+                print("Error receiving token")
+            }
+        }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
     }
 }
+

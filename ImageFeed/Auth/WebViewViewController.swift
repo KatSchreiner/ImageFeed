@@ -15,14 +15,11 @@ final class WebViewViewController: UIViewController {
     @IBOutlet private var webView: WKWebView!
     
     weak var delegate: WebViewViewControllerDelegate?
-    
 
-    
     override func viewDidLoad() {
         webView.navigationDelegate = self
         loadAuthView()
         updateProgress()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,10 +57,10 @@ final class WebViewViewController: UIViewController {
     
     private func loadAuthView() {
         guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            print("Fail")
+            print("Ошибка: Не удалось создать URLComponents")
             return
         }
-
+        
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: Constants.accessKey),
             URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
@@ -72,14 +69,13 @@ final class WebViewViewController: UIViewController {
         ]
 
         guard let url = urlComponents.url else {
-            print("Fail")
+            print("Ошибка: Не удалось получить URL из URLComponents")
             return
         }
 
         let request = URLRequest(url: url)
         webView.load(request)
         }
-    
 }
 
 extension WebViewViewController: WKNavigationDelegate {
