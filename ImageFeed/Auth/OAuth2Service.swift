@@ -51,9 +51,11 @@ final class OAuth2Service {
                     if 200 ..< 300 ~= statusCode {
                         if let data = data {
                             let decoder = JSONDecoder()
+                            decoder.keyDecodingStrategy = .convertFromSnakeCase
                             do {
                                 let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
                                 let accessToken = response.accessToken
+                                self.oauthToken = accessToken
                                 completion(.success(accessToken))
                             } catch {
                                 completion(.failure(NetworkError.urlSessionError))

@@ -20,7 +20,7 @@ final class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let token = tokenStorage.token {
+        if tokenStorage.token != nil {
             switchToBarController()
         } else {
             performSegue(withIdentifier: showAuthScreenIdentifier, sender: nil)

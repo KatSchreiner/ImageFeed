@@ -60,8 +60,6 @@ extension AuthViewController: WebViewViewControllerDelegate {
             switch result {
             case .success:
                 self.delegate?.didAuthenticate(self)
-                
-                print("Access Token")
             case .failure:
                 break
             }
