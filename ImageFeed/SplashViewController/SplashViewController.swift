@@ -9,8 +9,13 @@ import Foundation
 import UIKit
 
 final class SplashViewController: UIViewController {
+    
+    // MARK: - Private Properties
+    
     private let tokenStorage = OAuth2TokenStorage()
     private let showAuthScreenIdentifier = "showAuthenticationScreenSegue"
+    
+    // MARK: - Overrides Methods
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -22,6 +27,17 @@ final class SplashViewController: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNeedsStatusBarAppearanceUpdate()
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
+    
+    // MARK: - Private Methods
+    
     private func switchToBarController() {
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
@@ -32,6 +48,8 @@ final class SplashViewController: UIViewController {
         window.rootViewController = tabBarController
     }
 }
+
+// MARK: - SplashViewController
 
 extension SplashViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

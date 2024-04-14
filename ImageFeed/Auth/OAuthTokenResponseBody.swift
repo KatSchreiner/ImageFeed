@@ -14,8 +14,8 @@ struct OAuthTokenResponseBody: Codable {
     let createdAt: Int
     
     enum CodingKeys: String, CodingKey {
-        case accessToken = "acces token"
-        case tokenType = "token type"
+        case accessToken = "access_token"
+        case tokenType = "token_type"
         case scope
         case createdAt = "created_at"
     }

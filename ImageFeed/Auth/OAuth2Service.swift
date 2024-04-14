@@ -10,6 +10,11 @@ import Foundation
 final class OAuth2Service {
     static let shared = OAuth2Service()
     
+    private var oauthToken: String? {
+        get { OAuth2TokenStorage().token }
+        set { OAuth2TokenStorage().token = newValue }
+    }
+    
     private init() {}
     
     func makeOAuthTokenRequest(code: String) -> URLRequest {
@@ -34,7 +39,7 @@ final class OAuth2Service {
         return request
     }
     
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, NetworkError>) -> Void) {
+    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         let session = URLSession.shared
         let request = makeOAuthTokenRequest(code: code)
         
@@ -48,7 +53,8 @@ final class OAuth2Service {
                             let decoder = JSONDecoder()
                             do {
                                 let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                                completion(.success(response.accessToken))
+                                let accessToken = response.accessToken
+                                completion(.success(accessToken))
                             } catch {
                                 completion(.failure(NetworkError.urlSessionError))
                                 print("Decoder error: \(error)")

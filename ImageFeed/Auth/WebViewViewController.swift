@@ -11,19 +11,29 @@ import WebKit
 
 final class WebViewViewController: UIViewController {
     
+    // MARK: - IB Outlets
+    
     @IBOutlet private var progressView: UIProgressView!
     @IBOutlet private var webView: WKWebView!
     
+    // MARK: - Private Properties
+    
     weak var delegate: WebViewViewControllerDelegate?
-
+    
+    // MARK: - Overrides Methods
+    
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         webView.navigationDelegate = self
+        
         loadAuthView()
         updateProgress()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
         webView.addObserver(
             self,
             forKeyPath: #keyPath(WKWebView.estimatedProgress),
@@ -31,9 +41,10 @@ final class WebViewViewController: UIViewController {
             context: nil)
         updateProgress()
     }
-
-    override func viewDidDisappear(_ animated: Bool) {
+    
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
         webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
     
@@ -49,6 +60,8 @@ final class WebViewViewController: UIViewController {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
+    
+    // MARK: - Private Methods
     
     private func updateProgress(){
         progressView.progress = Float(webView.estimatedProgress)
@@ -67,16 +80,18 @@ final class WebViewViewController: UIViewController {
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: Constants.accessScope)
         ]
-
+        
         guard let url = urlComponents.url else {
             print("Ошибка: Не удалось получить URL из URLComponents")
             return
         }
-
+        
         let request = URLRequest(url: url)
         webView.load(request)
-        }
+    }
 }
+
+// MARK: - WKNavigationDelegate
 
 extension WebViewViewController: WKNavigationDelegate {
     func webView(
@@ -104,7 +119,8 @@ extension WebViewViewController: WKNavigationDelegate {
         } else {
             return nil
         }
-    }}
+    }
+}
 
 enum WebViewConstants {
     static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
