@@ -8,8 +8,9 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-    
     // MARK: - Private Properties
+    private var profile: Profile?
+    
     private let userPhoto: UIImageView = {
         let imageProfile = UIImage(named: "Photo")
         let userPhoto = UIImageView(image: imageProfile)
@@ -45,6 +46,18 @@ final class ProfileViewController: UIViewController {
         setupLoginProfile()
         setupDescriptionProfile()
         setupLogoutButton()
+        
+        if let token = OAuth2Service.shared.oauthToken {
+            ProfileService.shared.fetchProfile(token) { [weak self] result in
+                switch result {
+                case .success(let profile):
+                    self?.updateLabels(with: profile)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+        
     }
     
     // MARK: - IB Actions
@@ -54,6 +67,13 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    
+    private func updateLabels(with profile: Profile) {
+        nameLabel.text = profile.name
+        loginLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+    
     private func setupUserPhoto() {
         NSLayoutConstraint.activate([
             userPhoto.widthAnchor.constraint(equalToConstant: 70),
@@ -64,7 +84,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupNameProfile() {
-        nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = profile?.name
         nameLabel.textColor = .ypWhite
         nameLabel.font = UIFont.boldSystemFont(ofSize: 23.0)
         NSLayoutConstraint.activate([
@@ -74,7 +94,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupLoginProfile() {
-        loginLabel.text = "@ekaterina_nov"
+        loginLabel.text = profile?.loginName
         loginLabel.textColor = .ypGray
         loginLabel.font = UIFont.systemFont(ofSize: 13.0)
         NSLayoutConstraint.activate([
@@ -84,7 +104,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupDescriptionProfile() {
-        descriptionLabel.text = "Hello, world!"
+        descriptionLabel.text = profile?.bio
         descriptionLabel.textColor = .ypWhite
         descriptionLabel.font = UIFont.systemFont(ofSize: 13.0)
         NSLayoutConstraint.activate([

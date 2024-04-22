@@ -8,19 +8,17 @@
 import Foundation
 
 final class OAuth2Service {
-    static let shared = OAuth2Service()
+    static let shared = OAuth2Service(); private init() {}
     private let urlSession = URLSession.shared
     
     private var task: URLSessionTask?
     private var lastCode: String?
     private var queue = DispatchQueue(label: "OAuth2Service_fetchOAuthToken")
     
-    private var oauthToken: String? {
+    var oauthToken: String? {
         get { OAuth2TokenStorage().token }
         set { OAuth2TokenStorage().token = newValue }
     }
-    
-    private init() {}
     
     func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
@@ -46,6 +44,7 @@ final class OAuth2Service {
     }
     
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        UIBlockingProgressHUD.show() // блокировка UI перед выполнением задачи
         
         // Создаем серийную очередь выполнения задач
         queue.sync {
@@ -70,6 +69,9 @@ final class OAuth2Service {
             }
             
             let task = self.urlSession.dataTask(with: request) { [weak self] data, response, error in
+                
+                UIBlockingProgressHUD.dismiss()
+                
                 DispatchQueue.main.async {
                     if let response = response as? HTTPURLResponse {
                         let statusCode = response.statusCode
@@ -105,7 +107,6 @@ final class OAuth2Service {
                     self?.lastCode = nil // удаляем lastCode после завершения и обработки запроса
                 }
             }
-            
             self.task = task // сохраняем ссылку на task
             task.resume() // запускаем запрос на выполнение
         }
