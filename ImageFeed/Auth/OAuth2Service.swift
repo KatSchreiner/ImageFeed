@@ -9,6 +9,11 @@ import Foundation
 
 final class OAuth2Service {
     static let shared = OAuth2Service()
+    private let urlSession = URLSession.shared
+    
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    private var queue = DispatchQueue(label: "OAuth2Service_fetchOAuthToken")
     
     private var oauthToken: String? {
         get { OAuth2TokenStorage().token }
@@ -17,9 +22,10 @@ final class OAuth2Service {
     
     private init() {}
     
-    func makeOAuthTokenRequest(code: String) -> URLRequest {
+    func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
-            preconditionFailure("Failed to create URLComponents")
+            assertionFailure("Не удалось создать URLComponents")
+            return nil
         }
         
         urlComponents.queryItems = [
@@ -31,7 +37,7 @@ final class OAuth2Service {
         ]
         
         guard let url = urlComponents.url else {
-            preconditionFailure("Failed to get URL from URLComponents")
+            preconditionFailure("Не удалось получить URL-адрес из URLComponents")
         }
         
         var request = URLRequest(url: url)
@@ -40,45 +46,71 @@ final class OAuth2Service {
     }
     
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        let session = URLSession.shared
-        let request = makeOAuthTokenRequest(code: code)
         
-        let task = session.dataTask(with: request) { (data, response, error) in
-            DispatchQueue.main.async {
-                if let response = response as? HTTPURLResponse {
-                    let statusCode = response.statusCode
-                    
-                    if 200 ..< 300 ~= statusCode {
-                        if let data = data {
-                            let decoder = JSONDecoder()
-                            decoder.keyDecodingStrategy = .convertFromSnakeCase
-                            do {
-                                let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                                let accessToken = response.accessToken
-                                self.oauthToken = accessToken
-                                completion(.success(accessToken))
-                            } catch {
+        // Создаем серийную очередь выполнения задач
+        queue.sync {
+            // Проверяем, что метод вызывается на основной потоке
+            assert(Thread.isMainThread)
+            
+            // Проверяем, что lastcode отличается от текущего кода
+            guard lastCode != code else {
+                completion(.failure(AuthServiseError.invalidRequest))
+                return
+            }
+            // Отменяем предыдущую задачу
+            task?.cancel()
+            
+            // Сохраняем текущий код в lastcode
+            lastCode = code
+            
+            // Создаем и проверяем запрос на получение токена
+            guard let request = self.makeOAuthTokenRequest(code: code) else {
+                completion(.failure(AuthServiseError.invalidRequest))
+                return
+            }
+            
+            let task = self.urlSession.dataTask(with: request) { [weak self] data, response, error in
+                DispatchQueue.main.async {
+                    if let response = response as? HTTPURLResponse {
+                        let statusCode = response.statusCode
+                        
+                        if 200 ..< 300 ~= statusCode {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                                do {
+                                    let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+                                    let accessToken = response.accessToken
+                                    self?.oauthToken = accessToken
+                                    completion(.success(accessToken))
+                                } catch {
+                                    completion(.failure(NetworkError.urlSessionError))
+                                    print("Ошибка декодера: \(error)")
+                                }
+                            } else {
                                 completion(.failure(NetworkError.urlSessionError))
-                                print("Decoder error: \(error)")
                             }
                         } else {
-                            completion(.failure(NetworkError.urlSessionError))
+                            completion(.failure(NetworkError.httpStatusCode(statusCode)))
+                            print("Ошибка кода состояния HTTP: \(statusCode)")
                         }
+                    } else if let error = error {
+                        completion(.failure(NetworkError.urlRequestError(error)))
+                        print("Ошибка запроса URL: \(error)")
                     } else {
-                        completion(.failure(NetworkError.httpStatusCode(statusCode)))
-                        print("HTTP status code error: \(statusCode)")
+                        completion(.failure(NetworkError.urlSessionError))
+                        print("Ошибка сеанса URL-адреса")
                     }
-                } else if let error = error {
-                    completion(.failure(NetworkError.urlRequestError(error)))
-                    print("URL request error: \(error)")
-                } else {
-                    completion(.failure(NetworkError.urlSessionError))
-                    print("URL session error")
+                    self?.task = nil // обнуляем task
+                    self?.lastCode = nil // удаляем lastCode после завершения и обработки запроса
                 }
             }
+            
+            self.task = task // сохраняем ссылку на task
+            task.resume() // запускаем запрос на выполнение
         }
-        task.resume()
     }
 }
-
-
+enum AuthServiseError: Error {
+    case invalidRequest
+}
