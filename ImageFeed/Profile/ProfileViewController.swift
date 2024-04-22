@@ -48,6 +48,7 @@ final class ProfileViewController: UIViewController {
         setupLogoutButton()
         
         if let token = OAuth2Service.shared.oauthToken {
+            UIBlockingProgressHUD.show()
             ProfileService.shared.fetchProfile(token) { [weak self] result in
                 switch result {
                 case .success(let profile):
@@ -56,6 +57,7 @@ final class ProfileViewController: UIViewController {
                     print(error.localizedDescription)
                 }
             }
+            UIBlockingProgressHUD.dismiss()
         }
         
     }

@@ -7,22 +7,23 @@
 
 import Foundation
 
-struct ProfileResult: Codable {
-    let username: String
-    let firstName: String?
-    let lastName: String?
-    let bio: String?
-  
-    var name: String {
-        if let firstName = firstName, let lastName = lastName {
-            return "\(firstName) \(lastName)"
-        } else {
-            return ""
+final class ProfileResult: Codable {
+    var username: String
+    var firstName: String?
+    var lastName: String?
+    var bio: String?
+    var links: Links?
+    
+    struct Links: Codable {
+        let selfURL: String
+        let html: String
+        let photos: String
+        let likes: String
+        let portfolio: String
+        
+        private enum CodingKeys: String, CodingKey {
+            case selfURL = "self"
+            case html, photos, likes, portfolio
         }
     }
-    
-    var loginName: String {
-        return "@\(username)"
-    }
-
 }
