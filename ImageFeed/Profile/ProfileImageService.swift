@@ -14,9 +14,10 @@ final class ProfileImageService {
     private let queue = DispatchQueue(label: "ProfileImageServiceQueue")
     
     private(set) var avatarURL: String?
-    
-    func makeProfileImageRequest(for username: String) -> URLRequest? {
-        guard let url = URL(string: "api.unsplash.com//users/:username") else {
+
+    func makeProfileImageRequest(username: String) -> URLRequest? {
+        let path = "/users/:username"
+        guard let url = URL(string: path, relativeTo: Constants.defaultBaseURL) else {
             print("[ProfileImageService:makeImageProfileRequest]: AuthServiseError - invalidRequest")
             return nil
         }
@@ -30,11 +31,11 @@ final class ProfileImageService {
     }
     
     func fetchProfileImage(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = makeProfileImageRequest(for: username) else {
+        guard let request = makeProfileImageRequest(username: username) else {
             print("[ProfileImageService:fetchProfileImage]: AuthServiseError - invalidRequest")
             return }
-        let session = URLSession.shared
         
+        let session = URLSession.shared
         let task = session.objectTask(for: request) { (result: Result<UserResult, Error>) in
             DispatchQueue.main.async {
                 switch result {

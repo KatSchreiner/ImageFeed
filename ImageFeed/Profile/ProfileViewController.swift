@@ -13,24 +13,34 @@ final class ProfileViewController: UIViewController {
     private var profileImageServiceObserver: NSObjectProtocol?
    
     // MARK: - Private Properties
-    private let userPhoto: UIImageView = {
+    private var userPhoto: UIImageView = {
         let imageProfile = UIImage(named: "Photo")
         let userPhoto = UIImageView(image: imageProfile)
+        userPhoto.layer.cornerRadius = 35
+        userPhoto.clipsToBounds = true
         return userPhoto
     }()
-    private let nameLabel: UILabel = {
+//    private lazy var userPhoto = {
+//        let photoImage = UIImage(named: "Photo")
+//        let userPhoto = UIImageView()
+//        userPhoto.image = photoImage
+//        userPhoto.layer.cornerRadius = 35
+//        userPhoto.clipsToBounds = true
+//        return userPhoto
+//    }()
+    private var nameLabel: UILabel = {
         let nameLabel = UILabel()
         return nameLabel
     }()
-    private let loginLabel: UILabel = {
+    private var loginLabel: UILabel = {
         let loginLabel = UILabel()
         return loginLabel
     }()
-    private let descriptionLabel: UILabel = {
+    private var descriptionLabel: UILabel = {
         let descriptionLabel = UILabel()
         return descriptionLabel
     }()
-    private let logoutButton: UIButton = {
+    private var logoutButton: UIButton = {
         let logoutButton = UIButton(type: .system)
         return logoutButton
     }()
@@ -55,8 +65,7 @@ final class ProfileViewController: UIViewController {
             updateProfileDetails(profile: profile)
         
         
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
                 forName: ProfileImageService.didChangeNotification,
                 object: nil,
                 queue: .main
@@ -89,7 +98,6 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupUserPhoto() {
-        userPhoto.layer.cornerRadius = 35
         NSLayoutConstraint.activate([
             userPhoto.widthAnchor.constraint(equalToConstant: 70),
             userPhoto.heightAnchor.constraint(equalToConstant: 70),

@@ -31,13 +31,16 @@ final class ProfileService {
     }
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
+        
         guard let request = makeProfileRequest() else {
             completion(.failure(AuthServiseError.invalidRequest))
             print("[ProfileService:fetchProfile]: AuthServiseError - invalidRequest")
             return
         }
         let session = URLSession.shared
-        let task = session.objectTask(for: request) { (result: Result<ProfileResult, Error>) in
+        let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
+            guard let self = self else { return }
+            
             DispatchQueue.main.async{
                 switch result {
                 case .success(let profileresult):

@@ -95,22 +95,25 @@ extension SplashViewController: AuthViewControllerDelegate {
         if let token = OAuth2Service.shared.oauthToken {
             fetchProfile(token)
         }
-        if let username = ProfileService.shared.profile?.username {
-            ProfileImageService.shared.fetchProfileImage(username: username) { _ in }
-        }
     }
     
     func fetchProfile(_ token: String) {
         UIBlockingProgressHUD.show()
+        
         ProfileService.shared.fetchProfile(token) { [weak self] result in
             guard let self = self else { return }
+            
             switch result {
             case .success(_):
+                if let username = ProfileService.shared.profile?.username {
+                    ProfileImageService.shared.fetchProfileImage(username: username) { _ in }
+                }
                 switchToBarController()
             case .failure(let error):
                 print(error.localizedDescription)
             }
             UIBlockingProgressHUD.dismiss()
         }
+
     }
 }

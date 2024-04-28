@@ -70,7 +70,7 @@ final class OAuth2Service {
                         self?.oauthToken = accessToken
                         completion(.success(accessToken))
                     case .failure(let error):
-                        completion(.failure(NetworkError.urlSessionError))
+                        completion(.failure(NetworkError.urlSessionError.localizedDescription as! Error))
                         print("[OAuth2Service:fetchOAuthToken]: NetworkError - decodingError")
                     }
                 }
