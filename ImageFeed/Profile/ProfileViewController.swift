@@ -10,9 +10,9 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
-    private var profileImageServiceObserver: NSObjectProtocol?
-   
     // MARK: - Private Properties
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     private var userPhoto: UIImageView = {
         let imageProfile = UIImage(named: "Photo")
         let userPhoto = UIImageView(image: imageProfile)
@@ -20,14 +20,6 @@ final class ProfileViewController: UIViewController {
         userPhoto.clipsToBounds = true
         return userPhoto
     }()
-//    private lazy var userPhoto = {
-//        let photoImage = UIImage(named: "Photo")
-//        let userPhoto = UIImageView()
-//        userPhoto.image = photoImage
-//        userPhoto.layer.cornerRadius = 35
-//        userPhoto.clipsToBounds = true
-//        return userPhoto
-//    }()
     private var nameLabel: UILabel = {
         let nameLabel = UILabel()
         return nameLabel
@@ -62,17 +54,16 @@ final class ProfileViewController: UIViewController {
         setupLogoutButton()
         
         guard let profile = ProfileService.shared.profile else { return }
-            updateProfileDetails(profile: profile)
-        
+        updateProfileDetails(profile: profile)
         
         profileImageServiceObserver = NotificationCenter.default.addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            self.updateAvatar()
+        }
         updateAvatar()
     }
     
@@ -83,12 +74,12 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - Private Methods
-     func updateAvatar() {
+    func updateAvatar() {
         guard let profileImageURL = ProfileImageService.shared.avatarURL,
               let url = URL(string: profileImageURL) else { return }
         userPhoto.kf.setImage(with: url)
     }
-             
+    
     private func updateProfileDetails(profile: Profile) {
         DispatchQueue.main.async {
             self.nameLabel.text = profile.name

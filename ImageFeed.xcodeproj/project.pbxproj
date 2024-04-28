@@ -110,12 +110,14 @@
 		C14538862B9122E1003535E5 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				C1F0CC642BDECEDD00AEAED6 /* Models */,
 				C1F387152BC3514200315568 /* SplashViewController */,
 				C1FF94202BB9F905001C8F2D /* Auth */,
 				C1FF94252BBA0B86001C8F2D /* Services */,
 				C1936A482BA633460023875A /* SingleImageView */,
 				C1CA1A812BA33F6100C77734 /* Profile */,
 				C14538E82B93C1E8003535E5 /* ImagesList */,
+				C136CAA52BDBA3D800E43028 /* TabBarController.swift */,
 				C145388D2B9122E1003535E5 /* Main.storyboard */,
 				C17BDBB82B97AF4F00565288 /* Extensions */,
 				C19369E42BA45ED30023875A /* Resources */,
@@ -124,7 +126,6 @@
 				C14538922B9122E3003535E5 /* LaunchScreen.storyboard */,
 				C14538902B9122E3003535E5 /* Assets.xcassets */,
 				C14538952B9122E3003535E5 /* Info.plist */,
-				C136CAA52BDBA3D800E43028 /* TabBarController.swift */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -177,13 +178,19 @@
 			isa = PBXGroup;
 			children = (
 				C1936A442BA466330023875A /* ProfileViewController.swift */,
-				C136CA912BD6600300E43028 /* ProfileService.swift */,
-				C136CA932BD662CC00E43028 /* ProfileResult.swift */,
-				C136CA952BD6635400E43028 /* Profile.swift */,
-				C136CA972BD832F000E43028 /* ProfileImageService.swift */,
-				C136CA992BD8333200E43028 /* UserResult.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		C1F0CC642BDECEDD00AEAED6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C1B5A7982BC21D8800DDE2F9 /* OAuthTokenResponseBody.swift */,
+				C136CA952BD6635400E43028 /* Profile.swift */,
+				C136CA932BD662CC00E43028 /* ProfileResult.swift */,
+				C136CA992BD8333200E43028 /* UserResult.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		C1F387152BC3514200315568 /* SplashViewController */ = {
@@ -199,8 +206,6 @@
 			children = (
 				C1FF94212BB9F91A001C8F2D /* AuthViewController.swift */,
 				C1FF94232BB9FA66001C8F2D /* WebViewViewController.swift */,
-				C1B5A7962BC1FF2400DDE2F9 /* OAuth2Service.swift */,
-				C1B5A7982BC21D8800DDE2F9 /* OAuthTokenResponseBody.swift */,
 				C1B5A79A2BC3426200DDE2F9 /* OAuth2TokenStorage.swift */,
 			);
 			path = Auth;
@@ -209,10 +214,13 @@
 		C1FF94252BBA0B86001C8F2D /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				C1FF94262BBA0B9A001C8F2D /* WebViewViewControllerDelegate.swift */,
-				C1FF941B2BB76836001C8F2D /* Constants.swift */,
-				C136CA8F2BD64CD100E43028 /* UIBlockingProgressHUD.swift */,
+				C1B5A7962BC1FF2400DDE2F9 /* OAuth2Service.swift */,
+				C136CA912BD6600300E43028 /* ProfileService.swift */,
+				C136CA972BD832F000E43028 /* ProfileImageService.swift */,
 				C136CA9B2BDABB3100E43028 /* AlertPresenter.swift */,
+				C1FF94262BBA0B9A001C8F2D /* WebViewViewControllerDelegate.swift */,
+				C136CA8F2BD64CD100E43028 /* UIBlockingProgressHUD.swift */,
+				C1FF941B2BB76836001C8F2D /* Constants.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";

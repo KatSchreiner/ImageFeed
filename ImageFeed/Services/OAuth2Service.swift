@@ -8,7 +8,8 @@
 import Foundation
 
 final class OAuth2Service {
-    static let shared = OAuth2Service(); private init() {}
+    static let shared = OAuth2Service()
+    private init() {}
     
     private var task: URLSessionTask?
     private var lastCode: String?
@@ -45,11 +46,11 @@ final class OAuth2Service {
     
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         UIBlockingProgressHUD.show()
-        queue.sync {
+        
             assert(Thread.isMainThread)
             guard self.lastCode != code else {
                 completion(.failure(AuthServiseError.invalidRequest))
-                print("[OAuth2Service:fetchOAuthToken]: AuthServiseError - invalidRequest")
+                print("[OAuth2Service:fetchOAuthToken]: AuthServiseError - неверный запрос")
                 return
             }
             self.task?.cancel()
@@ -57,29 +58,31 @@ final class OAuth2Service {
             
             guard let request = self.makeOAuthTokenRequest(code: code) else {
                 completion(.failure(AuthServiseError.invalidRequest))
-                print("[OAuth2Service:fetchOAuthToken]: AuthServiseError - invalidRequest")
+                print("[OAuth2Service:fetchOAuthToken]: AuthServiseError - неверный запрос")
                 return
             }
             let session = URLSession.shared
             let task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+                guard let self = self else { return }
+                
                 UIBlockingProgressHUD.dismiss()
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let response):
                         let accessToken = response.accessToken
-                        self?.oauthToken = accessToken
+                        self.oauthToken = accessToken
                         completion(.success(accessToken))
                     case .failure(let error):
-                        completion(.failure(NetworkError.urlSessionError.localizedDescription as! Error))
-                        print("[OAuth2Service:fetchOAuthToken]: NetworkError - decodingError")
+                        completion(.failure(NetworkError.urlSessionError))
+                        print("[OAuth2Service:fetchOAuthToken]: NetworkError - ошибка декодирования")
                     }
                 }
-                self?.task = nil
-                self?.lastCode = nil
+                self.task = nil
+                self.lastCode = nil
             }
             self.task = task
             task.resume()
-        }
+        
     }
 }
 enum AuthServiseError: Error {

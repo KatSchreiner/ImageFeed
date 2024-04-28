@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class AlertPresenter {
-    static func showAlert(
+    static func showAlertError(
         in viewController: UIViewController,
         title: String,
         message: String) {

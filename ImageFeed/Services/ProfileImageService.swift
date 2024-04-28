@@ -8,35 +8,51 @@
 import Foundation
 
 final class ProfileImageService {
-    static let shared = ProfileImageService(); private init() {}
+    static let shared = ProfileImageService()
+    private init() {}
     
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     private let queue = DispatchQueue(label: "ProfileImageServiceQueue")
     
+    private var task: URLSessionTask?
+    private var imageUser: String?
+    
     private(set) var avatarURL: String?
 
     func makeProfileImageRequest(username: String) -> URLRequest? {
-        let path = "/users/:username"
+        let path = "/users/\(username)"
         guard let url = URL(string: path, relativeTo: Constants.defaultBaseURL) else {
-            print("[ProfileImageService:makeImageProfileRequest]: AuthServiseError - invalidRequest")
+            print("[ProfileImageService:makeProfileImageRequest]: ProfileServiceError - неверный запрос")
             return nil
         }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
         if let token = OAuth2Service.shared.oauthToken {
-            request.setValue("Bearer\(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         return request
     }
     
     func fetchProfileImage(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
+        
+        assert(Thread.isMainThread)
+        guard self.imageUser != username else {
+            completion(.failure(ProfileServiceError.invalidRequest))
+            print("[ProfileImageService:fetchProfileImage]: ProfileServiceError - неверный запрос")
+            return
+        }
+        self.task?.cancel()
+        self.imageUser = username
+        
         guard let request = makeProfileImageRequest(username: username) else {
-            print("[ProfileImageService:fetchProfileImage]: AuthServiseError - invalidRequest")
+            print("[ProfileImageService:fetchProfileImage]: ProfileServiceError - неверный запрос")
             return }
         
         let session = URLSession.shared
-        let task = session.objectTask(for: request) { (result: Result<UserResult, Error>) in
+        let task = session.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+            guard let self = self else { return }
+            
             DispatchQueue.main.async {
                 switch result {
                 case .success(let userResult):
@@ -53,10 +69,13 @@ final class ProfileImageService {
                     }
                 case .failure(let error):
                     completion(.failure(error))
-                    print("[ProfileService:fetchProfileImage]: NetworkError - decodingError - \(error.localizedDescription)")
+                    print("[ProfileImageService:fetchProfileImage]: NetworkError - ошибка декодирования")
                 }
             }
+            self.task = nil
+            self.imageUser = nil
         }
+        self.task = task
         task.resume()
     }
 }

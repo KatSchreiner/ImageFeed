@@ -78,13 +78,17 @@ final class SplashViewController: UIViewController {
 extension SplashViewController {
     func goToAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
         guard let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
             fatalError("Unable to instantiate AuthViewController from storyboard")
         }
+        
+        let navigationController = UINavigationController(rootViewController: authViewController)
         authViewController.delegate = self
-        authViewController.modalPresentationStyle = .fullScreen
-        present(authViewController, animated: true, completion: nil)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true, completion: nil)
     }
+    
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
@@ -99,8 +103,9 @@ extension SplashViewController: AuthViewControllerDelegate {
     
     func fetchProfile(_ token: String) {
         UIBlockingProgressHUD.show()
-        
         ProfileService.shared.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
             guard let self = self else { return }
             
             switch result {
@@ -112,8 +117,6 @@ extension SplashViewController: AuthViewControllerDelegate {
             case .failure(let error):
                 print(error.localizedDescription)
             }
-            UIBlockingProgressHUD.dismiss()
         }
-
     }
 }
