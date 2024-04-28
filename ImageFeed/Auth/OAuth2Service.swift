@@ -9,7 +9,6 @@ import Foundation
 
 final class OAuth2Service {
     static let shared = OAuth2Service(); private init() {}
-    private let urlSession = URLSession.shared
     
     private var task: URLSessionTask?
     private var lastCode: String?
@@ -22,7 +21,7 @@ final class OAuth2Service {
     
     func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
-            assertionFailure("Не удалось создать URLComponents")
+            print("[OAuth2Service:makeOAuthTokenRequest]: Не удалось создать URLComponents")
             return nil
         }
         
@@ -35,7 +34,8 @@ final class OAuth2Service {
         ]
         
         guard let url = urlComponents.url else {
-            preconditionFailure("Не удалось получить URL-адрес из URLComponents")
+            print("[OAuth2Service:makeOAuthTokenRequest]: Не удалось получить URL-адрес из URLComponents")
+            return nil
         }
         
         var request = URLRequest(url: url)
@@ -44,71 +44,41 @@ final class OAuth2Service {
     }
     
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        UIBlockingProgressHUD.show() // блокировка UI перед выполнением задачи
-        
-        // Создаем серийную очередь выполнения задач
+        UIBlockingProgressHUD.show()
         queue.sync {
-            // Проверяем, что метод вызывается на основной потоке
             assert(Thread.isMainThread)
-            
-            // Проверяем, что lastcode отличается от текущего кода
-            guard lastCode != code else {
+            guard self.lastCode != code else {
                 completion(.failure(AuthServiseError.invalidRequest))
+                print("[OAuth2Service:fetchOAuthToken]: AuthServiseError - invalidRequest")
                 return
             }
-            // Отменяем предыдущую задачу
-            task?.cancel()
+            self.task?.cancel()
+            self.lastCode = code
             
-            // Сохраняем текущий код в lastcode
-            lastCode = code
-            
-            // Создаем и проверяем запрос на получение токена
             guard let request = self.makeOAuthTokenRequest(code: code) else {
                 completion(.failure(AuthServiseError.invalidRequest))
+                print("[OAuth2Service:fetchOAuthToken]: AuthServiseError - invalidRequest")
                 return
             }
-            
-            let task = self.urlSession.dataTask(with: request) { [weak self] data, response, error in
-                
+            let session = URLSession.shared
+            let task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
                 UIBlockingProgressHUD.dismiss()
-                
                 DispatchQueue.main.async {
-                    if let response = response as? HTTPURLResponse {
-                        let statusCode = response.statusCode
-                        
-                        if 200 ..< 300 ~= statusCode {
-                            if let data = data {
-                                let decoder = JSONDecoder()
-                                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                                do {
-                                    let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                                    let accessToken = response.accessToken
-                                    self?.oauthToken = accessToken
-                                    completion(.success(accessToken))
-                                } catch {
-                                    completion(.failure(NetworkError.urlSessionError))
-                                    print("Ошибка декодера: \(error)")
-                                }
-                            } else {
-                                completion(.failure(NetworkError.urlSessionError))
-                            }
-                        } else {
-                            completion(.failure(NetworkError.httpStatusCode(statusCode)))
-                            print("Ошибка кода состояния HTTP: \(statusCode)")
-                        }
-                    } else if let error = error {
-                        completion(.failure(NetworkError.urlRequestError(error)))
-                        print("Ошибка запроса URL: \(error)")
-                    } else {
+                    switch result {
+                    case .success(let response):
+                        let accessToken = response.accessToken
+                        self?.oauthToken = accessToken
+                        completion(.success(accessToken))
+                    case .failure(let error):
                         completion(.failure(NetworkError.urlSessionError))
-                        print("Ошибка сеанса URL-адреса")
+                        print("[OAuth2Service:fetchOAuthToken]: NetworkError - decodingError")
                     }
-                    self?.task = nil // обнуляем task
-                    self?.lastCode = nil // удаляем lastCode после завершения и обработки запроса
                 }
+                self?.task = nil
+                self?.lastCode = nil
             }
-            self.task = task // сохраняем ссылку на task
-            task.resume() // запускаем запрос на выполнение
+            self.task = task
+            task.resume()
         }
     }
 }

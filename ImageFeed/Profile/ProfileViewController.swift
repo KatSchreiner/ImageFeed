@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    // MARK: - Private Properties
-    private var profile: Profile?
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+   
+    // MARK: - Private Properties
     private let userPhoto: UIImageView = {
         let imageProfile = UIImage(named: "Photo")
         let userPhoto = UIImageView(image: imageProfile)
@@ -33,9 +35,11 @@ final class ProfileViewController: UIViewController {
         return logoutButton
     }()
     
-    
     // MARK: - View Life Cycles
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypBlack
         let profileViews: [UIView] = [userPhoto, nameLabel, loginLabel, descriptionLabel, logoutButton]
         profileViews.forEach { view in
             view.translatesAutoresizingMaskIntoConstraints = false
@@ -47,19 +51,20 @@ final class ProfileViewController: UIViewController {
         setupDescriptionProfile()
         setupLogoutButton()
         
-        if let token = OAuth2Service.shared.oauthToken {
-            UIBlockingProgressHUD.show()
-            ProfileService.shared.fetchProfile(token) { [weak self] result in
-                switch result {
-                case .success(let profile):
-                    self?.updateLabels(with: profile)
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-            UIBlockingProgressHUD.dismiss()
-        }
+        guard let profile = ProfileService.shared.profile else { return }
+            updateProfileDetails(profile: profile)
         
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
     }
     
     // MARK: - IB Actions
@@ -69,14 +74,22 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - Private Methods
-    
-    private func updateLabels(with profile: Profile) {
-        nameLabel.text = profile.name
-        loginLabel.text = profile.loginName
-        descriptionLabel.text = profile.bio
+     func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+              let url = URL(string: profileImageURL) else { return }
+        userPhoto.kf.setImage(with: url)
+    }
+             
+    private func updateProfileDetails(profile: Profile) {
+        DispatchQueue.main.async {
+            self.nameLabel.text = profile.name
+            self.loginLabel.text = profile.loginName
+            self.descriptionLabel.text = profile.bio
+        }
     }
     
     private func setupUserPhoto() {
+        userPhoto.layer.cornerRadius = 35
         NSLayoutConstraint.activate([
             userPhoto.widthAnchor.constraint(equalToConstant: 70),
             userPhoto.heightAnchor.constraint(equalToConstant: 70),
@@ -86,7 +99,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupNameProfile() {
-        nameLabel.text = profile?.name
+        nameLabel.text = "Екатерина Новикова"
         nameLabel.textColor = .ypWhite
         nameLabel.font = UIFont.boldSystemFont(ofSize: 23.0)
         NSLayoutConstraint.activate([
@@ -96,7 +109,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupLoginProfile() {
-        loginLabel.text = profile?.loginName
+        loginLabel.text = "@ekaterina_nov"
         loginLabel.textColor = .ypGray
         loginLabel.font = UIFont.systemFont(ofSize: 13.0)
         NSLayoutConstraint.activate([
@@ -106,7 +119,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupDescriptionProfile() {
-        descriptionLabel.text = profile?.bio
+        descriptionLabel.text = "Hello, World!"
         descriptionLabel.textColor = .ypWhite
         descriptionLabel.font = UIFont.systemFont(ofSize: 13.0)
         NSLayoutConstraint.activate([

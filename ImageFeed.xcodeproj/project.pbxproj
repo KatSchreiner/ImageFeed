@@ -12,6 +12,12 @@
 		C136CA922BD6600300E43028 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA912BD6600300E43028 /* ProfileService.swift */; };
 		C136CA942BD662CC00E43028 /* ProfileResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA932BD662CC00E43028 /* ProfileResult.swift */; };
 		C136CA962BD6635400E43028 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA952BD6635400E43028 /* Profile.swift */; };
+		C136CA982BD832F000E43028 /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA972BD832F000E43028 /* ProfileImageService.swift */; };
+		C136CA9A2BD8333200E43028 /* UserResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA992BD8333200E43028 /* UserResult.swift */; };
+		C136CA9C2BDABB3100E43028 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA9B2BDABB3100E43028 /* AlertPresenter.swift */; };
+		C136CAA12BDAC9BE00E43028 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = C136CAA02BDAC9BE00E43028 /* Kingfisher */; };
+		C136CAA42BDB9DAE00E43028 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = C136CAA32BDB9DAE00E43028 /* SwiftKeychainWrapper */; };
+		C136CAA62BDBA3D800E43028 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CAA52BDBA3D800E43028 /* TabBarController.swift */; };
 		C14538882B9122E1003535E5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14538872B9122E1003535E5 /* AppDelegate.swift */; };
 		C145388A2B9122E1003535E5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14538892B9122E1003535E5 /* SceneDelegate.swift */; };
 		C145388C2B9122E1003535E5 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C145388B2B9122E1003535E5 /* ImagesListViewController.swift */; };
@@ -41,6 +47,10 @@
 		C136CA912BD6600300E43028 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		C136CA932BD662CC00E43028 /* ProfileResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResult.swift; sourceTree = "<group>"; };
 		C136CA952BD6635400E43028 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		C136CA972BD832F000E43028 /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
+		C136CA992BD8333200E43028 /* UserResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResult.swift; sourceTree = "<group>"; };
+		C136CA9B2BDABB3100E43028 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
+		C136CAA52BDBA3D800E43028 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		C14538842B9122E1003535E5 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C14538872B9122E1003535E5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C14538892B9122E1003535E5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -72,7 +82,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C136CAA12BDAC9BE00E43028 /* Kingfisher in Frameworks */,
 				C136CA8E2BD4F52200E43028 /* ProgressHUD in Frameworks */,
+				C136CAA42BDB9DAE00E43028 /* SwiftKeychainWrapper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +124,7 @@
 				C14538922B9122E3003535E5 /* LaunchScreen.storyboard */,
 				C14538902B9122E3003535E5 /* Assets.xcassets */,
 				C14538952B9122E3003535E5 /* Info.plist */,
+				C136CAA52BDBA3D800E43028 /* TabBarController.swift */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -167,6 +180,8 @@
 				C136CA912BD6600300E43028 /* ProfileService.swift */,
 				C136CA932BD662CC00E43028 /* ProfileResult.swift */,
 				C136CA952BD6635400E43028 /* Profile.swift */,
+				C136CA972BD832F000E43028 /* ProfileImageService.swift */,
+				C136CA992BD8333200E43028 /* UserResult.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -197,6 +212,7 @@
 				C1FF94262BBA0B9A001C8F2D /* WebViewViewControllerDelegate.swift */,
 				C1FF941B2BB76836001C8F2D /* Constants.swift */,
 				C136CA8F2BD64CD100E43028 /* UIBlockingProgressHUD.swift */,
+				C136CA9B2BDABB3100E43028 /* AlertPresenter.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -219,6 +235,8 @@
 			name = ImageFeed;
 			packageProductDependencies = (
 				C136CA8D2BD4F52200E43028 /* ProgressHUD */,
+				C136CAA02BDAC9BE00E43028 /* Kingfisher */,
+				C136CAA32BDB9DAE00E43028 /* SwiftKeychainWrapper */,
 			);
 			productName = ImageFeed;
 			productReference = C14538842B9122E1003535E5 /* ImageFeed.app */;
@@ -250,6 +268,8 @@
 			mainGroup = C145387B2B9122E1003535E5;
 			packageReferences = (
 				C136CA8C2BD4F52200E43028 /* XCRemoteSwiftPackageReference "ProgressHUD" */,
+				C136CA9F2BDAC9BE00E43028 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				C136CAA22BDB9DAD00E43028 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */,
 			);
 			productRefGroup = C14538852B9122E1003535E5 /* Products */;
 			projectDirPath = "";
@@ -290,12 +310,16 @@
 				C145388C2B9122E1003535E5 /* ImagesListViewController.swift in Sources */,
 				C14538E72B93C1B7003535E5 /* ImagesListCell.swift in Sources */,
 				C1936A472BA630300023875A /* SingleImageViewController.swift in Sources */,
+				C136CAA62BDBA3D800E43028 /* TabBarController.swift in Sources */,
 				C17BDBBA2B97AF7C00565288 /* UIView+Extensions.swift in Sources */,
 				C14538882B9122E1003535E5 /* AppDelegate.swift in Sources */,
+				C136CA9A2BD8333200E43028 /* UserResult.swift in Sources */,
 				C1FF94272BBA0B9A001C8F2D /* WebViewViewControllerDelegate.swift in Sources */,
 				C1B5A7992BC21D8800DDE2F9 /* OAuthTokenResponseBody.swift in Sources */,
 				C136CA922BD6600300E43028 /* ProfileService.swift in Sources */,
+				C136CA9C2BDABB3100E43028 /* AlertPresenter.swift in Sources */,
 				C145388A2B9122E1003535E5 /* SceneDelegate.swift in Sources */,
+				C136CA982BD832F000E43028 /* ProfileImageService.swift in Sources */,
 				C1B5A79B2BC3426200DDE2F9 /* OAuth2TokenStorage.swift in Sources */,
 				C1FF94222BB9F91A001C8F2D /* AuthViewController.swift in Sources */,
 				C1FF941C2BB76836001C8F2D /* Constants.swift in Sources */,
@@ -539,6 +563,22 @@
 				minimumVersion = 14.1.1;
 			};
 		};
+		C136CA9F2BDAC9BE00E43028 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.11.0;
+			};
+		};
+		C136CAA22BDB9DAD00E43028 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jrendel/SwiftKeychainWrapper";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -546,6 +586,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C136CA8C2BD4F52200E43028 /* XCRemoteSwiftPackageReference "ProgressHUD" */;
 			productName = ProgressHUD;
+		};
+		C136CAA02BDAC9BE00E43028 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C136CA9F2BDAC9BE00E43028 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		C136CAA32BDB9DAE00E43028 /* SwiftKeychainWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C136CAA22BDB9DAD00E43028 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */;
+			productName = SwiftKeychainWrapper;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

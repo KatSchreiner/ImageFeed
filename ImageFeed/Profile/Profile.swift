@@ -12,13 +12,6 @@ struct Profile {
     var name: String
     var loginName: String
     var bio: String?
-    
-//    init(profileResult: ProfileResult) {
-//        username = profileResult.username
-//        name = "\(profileResult.firstName) \(profileResult.lastName)"
-//        loginName = "@\(profileResult.username)"
-//        bio = profileResult.bio
-//    }
 }
 
 

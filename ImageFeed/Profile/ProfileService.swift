@@ -9,10 +9,16 @@ import Foundation
 
 final class ProfileService {
     static let shared = ProfileService(); private init() {}
-    private let urlSession = URLSession.shared
     
-    private func createURL() -> URLRequest? {
-        guard let url = URL(string: "https://api.unsplash.com/me") else { return nil }
+    private(set) var profile: Profile?
+    private let queue = DispatchQueue(label: "profileServiceQueue")
+
+    private func makeProfileRequest() -> URLRequest? {
+        let path = "/me"
+        guard let url = URL(string: path, relativeTo: Constants.defaultBaseURL) else {
+            print("[ProfileService:makeProfileRequest]: Не удалось создать URL")
+            return nil
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -25,40 +31,30 @@ final class ProfileService {
     }
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
-        guard let request = createURL() else {
+        guard let request = makeProfileRequest() else {
             completion(.failure(AuthServiseError.invalidRequest))
-            print("Неверный запрос")
+            print("[ProfileService:fetchProfile]: AuthServiseError - invalidRequest")
             return
         }
-        let taskProfile = urlSession.dataTask(with: request) { data, response, error in
-            
-            DispatchQueue.main.async {
-                if let data = data {
-                    
-                    do {
-                        let decoder = JSONDecoder()
-                        decoder.keyDecodingStrategy = .convertFromSnakeCase
-                        let profileResult = try decoder.decode(ProfileResult.self, from: data)
-                        let profile = Profile(
-                            username: profileResult.username,
-                            name: "\(profileResult.firstName ?? "") \(profileResult.lastName ?? "")",
-                            loginName: "@\(profileResult.username)",
-                            bio: profileResult.bio
-                        )
-                        completion(.success(profile))
-                    } catch {
-                        completion(.failure(error))
-                        print("Ошибка загрузки данных профиля")
-                    }
-                } else if let error = error {
+        let session = URLSession.shared
+        let task = session.objectTask(for: request) { (result: Result<ProfileResult, Error>) in
+            DispatchQueue.main.async{
+                switch result {
+                case .success(let profileresult):
+                    let profile = Profile(
+                        username: profileresult.username,
+                        name: "\(profileresult.firstName ?? "") \(profileresult.lastName ?? "")",
+                        loginName: "@\(profileresult.username)",
+                        bio: profileresult.bio
+                    )
+                    self.profile = profile
+                    completion(.success(profile))
+                case .failure(let error):
                     completion(.failure(error))
-                    print("Ошибка запроса URL: \(error)")
-                } else {
-                    completion(.failure(NetworkError.urlSessionError))
-                    print("Ошибка сеанса ")
+                    print("[ProfileService:fetchProfile]: NetworkError - decodingError")
                 }
             }
         }
-        taskProfile.resume()
+        task.resume()
     }
 }

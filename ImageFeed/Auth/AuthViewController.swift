@@ -51,22 +51,29 @@ final class AuthViewController: UIViewController {
 }
 
 // MARK: - WebViewViewControllerDelegate
+extension AuthViewController {
+    private func showAlerError() {
+        AlertPresenter.showAlert(
+            in: self,
+            title: "Что-то пошло не так(",
+            message: "Не удалось войти в систему")
+    }
+}
 
 extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true)
-        
         UIBlockingProgressHUD.show()
         oauth2Service.fetchOAuthToken(code: code) { result in
-            
             UIBlockingProgressHUD.dismiss()
-            
             switch result {
             case .success:
                 self.delegate?.didAuthenticate(self)
             case .failure:
-                break
+                DispatchQueue.main.async {
+                    self.showAlerError()
+                }
             }
         }
     }
