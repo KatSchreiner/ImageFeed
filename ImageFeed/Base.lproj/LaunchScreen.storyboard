@@ -17,15 +17,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo LaunchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="dZv-xM-7Hd">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo_launchscreen" translatesAutoresizingMaskIntoConstraints="NO" id="dZv-xM-7Hd">
                                 <rect key="frame" x="169.5" y="416" width="75" height="78"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
-                            <constraint firstItem="dZv-xM-7Hd" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="tEG-5d-P1W"/>
-                            <constraint firstItem="dZv-xM-7Hd" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="uIR-fp-Vm8"/>
+                            <constraint firstItem="dZv-xM-7Hd" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="tEG-5d-P1W"/>
+                            <constraint firstItem="dZv-xM-7Hd" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="7" id="uIR-fp-Vm8"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -35,7 +35,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Logo LaunchScreen" width="75" height="78"/>
+        <image name="logo_launchscreen" width="75" height="78"/>
         <namedColor name="YP Black">
             <color red="0.10199999809265137" green="0.10599999874830246" blue="0.13300000131130219" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

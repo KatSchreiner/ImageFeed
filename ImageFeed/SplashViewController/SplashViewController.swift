@@ -11,19 +11,29 @@ import UIKit
 final class SplashViewController: UIViewController {
     
     // MARK: - Private Properties
-    
+
     private let tokenStorage = OAuth2TokenStorage()
-    private let showAuthScreenIdentifier = "showAuthenticationScreenSegue"
+    
+    private var splashLogo: UIImageView = {
+        let imageLogo = UIImage(named: "logo_launchscreen")
+        let splashLogo = UIImageView(image: imageLogo)
+        return splashLogo
+    }()
     
     // MARK: - Overrides Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupSplashLogo()
+        self.view.backgroundColor = .ypBlack
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if tokenStorage.token != nil {
-            switchToBarController()
+        if let token = tokenStorage.token {
+            fetchProfile(token)
         } else {
-            performSegue(withIdentifier: showAuthScreenIdentifier, sender: nil)
+            goToAuthViewController()
         }
     }
     
@@ -31,12 +41,26 @@ final class SplashViewController: UIViewController {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
     }
-
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
     
     // MARK: - Private Methods
+    private func setupSplashLogo() {
+        splashLogo.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(splashLogo)
+        NSLayoutConstraint.activate([
+            splashLogo.widthAnchor.constraint(equalToConstant: 75),
+            splashLogo.heightAnchor.constraint(equalToConstant: 78),
+            splashLogo.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            splashLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    @objc private func didTapLoginButton() {
+        
+    }
     
     private func switchToBarController() {
         guard let window = UIApplication.shared.windows.first else {
@@ -49,28 +73,50 @@ final class SplashViewController: UIViewController {
     }
 }
 
-// MARK: - SplashViewController
+// MARK: - SplashViewController: AuthViewControllerDelegate
 
 extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showAuthScreenIdentifier {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else {
-                assertionFailure("Failed to prepare for \(showAuthScreenIdentifier)")
-                return
-            }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
+    func goToAuthViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        guard let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
+            fatalError("Unable to instantiate AuthViewController from storyboard")
         }
+        
+        let navigationController = UINavigationController(rootViewController: authViewController)
+        authViewController.delegate = self
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true, completion: nil)
     }
+    
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
+    
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)
-        switchToBarController()
+        
+        if let token = OAuth2Service.shared.oauthToken {
+            fetchProfile(token)
+        }
+    }
+    
+    func fetchProfile(_ token: String) {
+        UIBlockingProgressHUD.show()
+        ProfileService.shared.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(_):
+                if let username = ProfileService.shared.profile?.username {
+                    ProfileImageService.shared.fetchProfileImage(username: username) { _ in }
+                }
+                switchToBarController()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }
