@@ -55,8 +55,34 @@ extension ImagesListViewController: UITableViewDataSource {
         return 20
     }
     
+//    вызывается прямо перед тем, как ячейка таблицы будет показана на экране.
+    func tableView(
+        _ tableView: UITableView,
+        willDisplay cell: UITableViewCell,
+        forRowAt IndexPath: IndexPath
+    ) {
+//    TODO: вызываем функцию fetchPhotosNextPage
+        if IndexPath.row + 1 == ImagesListService.shared.photos.count {
+            guard let username = ProfileService.shared.profile?.username else { return }
+            ImagesListService.shared.fetchPhotosNextPage(username) { result in
+                switch result {
+                case .success:
+                    // Обновляем таблицу после успешной загрузки
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                case .failure(let error):
+                    print("Error fetching photos: \(error)")
+                }
+            }
+            //TODO: нужно сделать так, чтобы многократные вызовы fetchPhotosNextPage() были «дешёвыми» по ресурсам и не приводили к прерыванию текущего сетевого запроса.
+        }
+    }
+    
     // возвращаем ячейку по идентификатору
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
         guard let imageListCell = cell as? ImagesListCell else {
             return UITableViewCell()
