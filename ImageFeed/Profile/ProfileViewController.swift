@@ -13,26 +13,26 @@ final class ProfileViewController: UIViewController {
     // MARK: - Private Properties
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    private var userPhoto: UIImageView = {
+    private let userPhoto: UIImageView = {
         let imageProfile = UIImage(named: "Photo")
         let userPhoto = UIImageView(image: imageProfile)
         userPhoto.layer.cornerRadius = 35
         userPhoto.clipsToBounds = true
         return userPhoto
     }()
-    private var nameLabel: UILabel = {
+    private let nameLabel: UILabel = {
         let nameLabel = UILabel()
         return nameLabel
     }()
-    private var loginLabel: UILabel = {
+    private let loginLabel: UILabel = {
         let loginLabel = UILabel()
         return loginLabel
     }()
-    private var descriptionLabel: UILabel = {
+    private let descriptionLabel: UILabel = {
         let descriptionLabel = UILabel()
         return descriptionLabel
     }()
-    private var logoutButton: UIButton = {
+    private let logoutButton: UIButton = {
         let logoutButton = UIButton(type: .system)
         return logoutButton
     }()
@@ -42,8 +42,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlack
-        let profileViews: [UIView] = [userPhoto, nameLabel, loginLabel, descriptionLabel, logoutButton]
-        profileViews.forEach { view in
+        [userPhoto, nameLabel, loginLabel, descriptionLabel, logoutButton].forEach { view in
             view.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(view)
         }

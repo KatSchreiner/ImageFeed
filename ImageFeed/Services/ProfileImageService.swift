@@ -19,7 +19,7 @@ final class ProfileImageService {
     
     private(set) var avatarURL: String?
 
-    func makeProfileImageRequest(username: String) -> URLRequest? {
+    private func makeProfileImageRequest(username: String) -> URLRequest? {
         let path = "/users/\(username)"
         guard let url = URL(string: path, relativeTo: Constants.defaultBaseURL) else {
             print("[ProfileImageService:makeProfileImageRequest]: ProfileServiceError - неверный запрос")

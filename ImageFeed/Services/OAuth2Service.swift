@@ -13,14 +13,13 @@ final class OAuth2Service {
     
     private var task: URLSessionTask?
     private var lastCode: String?
-    private var queue = DispatchQueue(label: "OAuth2Service_fetchOAuthToken")
     
     var oauthToken: String? {
         get { OAuth2TokenStorage().token }
         set { OAuth2TokenStorage().token = newValue }
     }
     
-    func makeOAuthTokenRequest(code: String) -> URLRequest? {
+    private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
             print("[OAuth2Service:makeOAuthTokenRequest]: Не удалось создать URLComponents")
             return nil
