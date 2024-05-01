@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 final class ImagesListCell: UITableViewCell {
     
@@ -21,6 +22,11 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Private Properties
     private var controller = ImagesListViewController()
+    
+
+            
+    // TODO: Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
+
     
     // MARK: Public Methods
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {

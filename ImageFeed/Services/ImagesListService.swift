@@ -9,13 +9,13 @@ import Foundation
 
 final class ImagesListService {
     static let shared = ImagesListService()
-    private init() {}
+    //private init() {}
     
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
-    private var lastLoadedPage: Int?
-    
     private (set) var photos: [Photo] = []
+    private var lastLoadedPage: Int?
+    private var lastRequest: URL?
     
     private func makePhotosRequest(username: String) -> URLRequest? {
         let path = "/users/\(username)/collections"
@@ -29,26 +29,31 @@ final class ImagesListService {
         if let token = OAuth2Service.shared.oauthToken {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
+        
+        if let lastRequest = lastRequest, url == lastRequest {
+            assertionFailure("[ImagesListService:makePhotosRequest]: ImagesListServiceError - - повторный запрос")
+            return nil
+        }
+        
+        self.lastRequest = url
         return request
     }
     
-    func fetchPhotosNextPage(_ username: String, completion: @escaping (Result<PhotoResult, Error>) -> Void) {
-        // Здесь получим страницу номер 1, если ещё не загружали ничего,
-            // и следующую страницу (на единицу больше), если есть предыдущая загруженная страница
-        guard let request = makePhotosRequest(username: username) else { 
+    func fetchPhotosNextPage(_ username: String, completion: @escaping (Result<Photo, Error>) -> Void) {
+        
+        let nextPage = (lastLoadedPage ?? 0) + 1 // Вычисляем номер следующей страницы
+        
+        guard let request = makePhotosRequest(username: username) else {
             assertionFailure("[ImagesListService:fetchPhotosNextPage]: ImagesListServiceError - неверный запрос")
             return }
         
-        let nextPage = (lastLoadedPage ?? 0) + 1
-        
-        let session = URLSession.shared
-        let task = session.objectTask(for: request) { [weak self] (result: Result<PhotoResult, Error>) in
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<PhotoResult, Error>) in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
                 switch result {
                 case .success(let photoResult):
-                    let newPhoto = Photo(
+                    let newPhotos = Photo(
                         id: photoResult.id,
                         size: CGSize(width: photoResult.width, height: photoResult.height),
                         createdAt: photoResult.createdAt,
@@ -58,19 +63,16 @@ final class ImagesListService {
                         isLiked: photoResult.likedByUser
                     )
                     
-                    DispatchQueue.main.async {
-                        self.photos.append(newPhoto)
-                        
-                        // обновляем текущую страницу
-                        self.lastLoadedPage = nextPage
-                        
-                        completion(.success(photoResult))
-                        
-                        NotificationCenter.default.post(
-                            name: ImagesListService.didChangeNotification,
-                            object: self
-                        )
-                    }
+                    self.photos.append(newPhotos)
+                    self.lastLoadedPage = nextPage
+                    completion(.success(newPhotos))
+
+                    NotificationCenter.default.post(
+                        name: ImagesListService.didChangeNotification,
+                        object: self,
+                        userInfo: ["url": newPhotos]
+                    )
+
                 case .failure(let error):
                     completion(.failure(error))
                     print("[ImagesListService:fetchPhotosNextPage]: NetworkError - ошибка декодирования")
@@ -79,7 +81,6 @@ final class ImagesListService {
             
         }
         task.resume()
-        
     }
 }
 
