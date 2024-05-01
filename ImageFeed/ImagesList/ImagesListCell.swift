@@ -23,10 +23,13 @@ final class ImagesListCell: UITableViewCell {
     // MARK: Private Properties
     private var controller = ImagesListViewController()
     
-
-            
-    // TODO: Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
-
+    // MARK: Override Mhetods       
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
+        // fullsize
+        cellImage.kf.cancelDownloadTask()
+    }
     
     // MARK: Public Methods
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
