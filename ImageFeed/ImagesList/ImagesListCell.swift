@@ -21,7 +21,7 @@ final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
     
     // MARK: Private Properties
-    private var controller = ImagesListViewController()
+    private var imagesListViewController = ImagesListViewController()
     
     // MARK: Override Mhetods       
     override func prepareForReuse() {
@@ -34,7 +34,7 @@ final class ImagesListCell: UITableViewCell {
     // MARK: Public Methods
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         // получаем название картинки по индексу
-        let imageName = controller.photosName[indexPath.row]
+        let imageName = imagesListViewController.photosName[indexPath.row]
         
         // проверяем есть UIImage с таким название
         if let image = UIImage(named: imageName) {
@@ -43,7 +43,7 @@ final class ImagesListCell: UITableViewCell {
         
         // добавляем текущую дату
         let currentDate = Date()
-        let dateString = controller.dateFormatter.string(from: currentDate)
+        let dateString = imagesListViewController.dateFormatter.string(from: currentDate)
         self.dateLabel.text = dateString
         
         if indexPath.row % 2 == 0 {
