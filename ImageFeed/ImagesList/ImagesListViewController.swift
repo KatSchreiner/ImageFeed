@@ -13,6 +13,7 @@ final class ImagesListViewController: UIViewController {
     @IBOutlet weak private var tableView: UITableView!
     
     private var imagesListServiceObserver: NSObjectProtocol?
+    private var imagesListService = ImagesListService()
     private var photos: [Photo] = []
     
     // MARK: Public Properties
@@ -47,13 +48,15 @@ final class ImagesListViewController: UIViewController {
             guard let self = self else { return }
             self.updateTableViewAnimated()
         }
+        updateTableViewAnimated()
+
     }
     
     // функция срабатывает когда приходит нотификация о том, что данные изменились
     func updateTableViewAnimated() {
         let oldCount = photos.count
-        let newCount = ImagesListService.shared.photos.count
-        photos = ImagesListService.shared.photos
+        let newCount = imagesListService.photos.count
+        photos = imagesListService.photos
         if oldCount != newCount {
             tableView.performBatchUpdates {
                 let indexPaths = (oldCount..<newCount).map { i in
@@ -91,8 +94,7 @@ extension ImagesListViewController: UITableViewDataSource {
         guard let imageListCell = cell as? ImagesListCell else {
             return UITableViewCell()
         }
-//        imageListCell.configCell(for: imageListCell, with: indexPath) //
-//        return imageListCell
+        imageListCell.configCell(for: imageListCell, with: indexPath)
             
             let photo = photos[indexPath.row]
             
