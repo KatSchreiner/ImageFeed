@@ -12,10 +12,6 @@ final class ImagesListViewController: UIViewController {
     // MARK: IB Outlets
     @IBOutlet weak private var tableView: UITableView!
     
-    private var imagesListServiceObserver: NSObjectProtocol?
-    private var imagesListService = ImagesListService()
-    private var photos: [Photo] = []
-    
     // MARK: Public Properties
     var  dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -29,8 +25,9 @@ final class ImagesListViewController: UIViewController {
     let photosName: [String] = Array(0..<20).map{ "\($0)"}
     
     // MARK: Private Properties
-    
+    private var imagesListServiceObserver: NSObjectProtocol?
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    private var photos: [Photo] = []
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -46,17 +43,14 @@ final class ImagesListViewController: UIViewController {
             queue: .main
         ) { [weak self] _ in
             guard let self = self else { return }
-            self.updateTableViewAnimated()
         }
-        updateTableViewAnimated()
-
     }
     
     // функция срабатывает когда приходит нотификация о том, что данные изменились
     func updateTableViewAnimated() {
         let oldCount = photos.count
-        let newCount = imagesListService.photos.count
-        photos = imagesListService.photos
+        let newCount = ImagesListService.shared.photos.count
+        photos = ImagesListService.shared.photos
         if oldCount != newCount {
             tableView.performBatchUpdates {
                 let indexPaths = (oldCount..<newCount).map { i in
@@ -87,39 +81,49 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     // возвращаем ячейку по идентификатору
-    func tableView(
-        _ tableView: UITableView,
-        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
         guard let imageListCell = cell as? ImagesListCell else {
             return UITableViewCell()
         }
+        
         imageListCell.configCell(for: imageListCell, with: indexPath)
-            
-            let photo = photos[indexPath.row]
-            
-            // Загрузка изображения с использованием Kingfisher
-            //  метод reloadRows вызвать в комплишн-блоке метода kf.setImage.
-            imageListCell.cellImage.kf.setImage(
-                with: URL(string: photo.thumbImageURL),
-                placeholder: UIImage(named: "placeholder_image"),
-                completionHandler: { result in
-                    switch result {
-                    case .success(_):
-                        tableView.reloadRows(at: [indexPath], with: .automatic)
-                    case .failure(let error):
-                        print("Error loading kf.image: \(error)")
-                    }
+        
+        let photo = photos[indexPath.row]
+        
+        // Загрузка изображения с использованием Kingfisher
+        imageListCell.cellImage.kf.setImage(
+            with: URL(string: photo.thumbImageURL),
+            placeholder: UIImage(named: "placeholder_image"),
+            completionHandler: { result in
+                switch result {
+                case .success(_):
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
+                case .failure(let error):
+                    print("Error loading kf.image: \(error)")
                 }
-                )
-            imageListCell.cellImage.kf.indicatorType = .activity
-            
-            return imageListCell
+            }
+        )
+        imageListCell.cellImage.kf.indicatorType = .activity
+        
+        
+        return imageListCell
     }
 }
 
 // MARK: UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
+    func tableView(
+        _ tableView: UITableView,
+        willDisplay cell: UITableViewCell,
+        forRowAt IndexPath: IndexPath) {
+            if IndexPath.row + 1 == photos.count {
+                ImagesListService.shared.fetchPhotosNextPage() { _ in }
+            } else {
+                assertionFailure("[ImagesListViewController]: ошибка загрузки")
+            }
+        }
+    
     // действия при нажатии на ячейку таблицы
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
@@ -137,24 +141,4 @@ extension ImagesListViewController: UITableViewDelegate {
         
         return imageHeight + padding
     }
-    
-    //    вызывается прямо перед тем, как ячейка таблицы будет показана на экране.
-        func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt IndexPath: IndexPath) {
-    //    вызываем функцию fetchPhotosNextPage
-            if IndexPath.row + 1 == ImagesListService.shared.photos.count {
-                guard let username = ProfileService.shared.profile?.username else { return }
-                ImagesListService.shared.fetchPhotosNextPage(username) { result in
-                    switch result {
-                    case .success:
-                        // Обновляем таблицу после успешной загрузки
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    case .failure(let error):
-                        print("Error fetching photos: \(error)")
-                    }
-                }
-                //TODO: нужно сделать так, чтобы многократные вызовы fetchPhotosNextPage() были «дешёвыми» по ресурсам и не приводили к прерыванию текущего сетевого запроса.
-            }
-        }
 }
