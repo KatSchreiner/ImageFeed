@@ -23,23 +23,8 @@ final class ImagesListCell: UITableViewCell {
     // MARK: Private Properties
     private var imagesListViewController = ImagesListViewController()
     
-    // MARK: Override Mhetods       
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
-        // fullsize
-        cellImage.kf.cancelDownloadTask()
-    }
-    
     // MARK: Public Methods
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        // получаем название картинки по индексу
-        let imageName = imagesListViewController.photosName[indexPath.row]
-        
-        // проверяем есть UIImage с таким название
-        if let image = UIImage(named: imageName) {
-            self.cellImage.image = image
-        } else { return }
         
         // добавляем текущую дату
         let currentDate = Date()
@@ -53,5 +38,12 @@ final class ImagesListCell: UITableViewCell {
         }
         
         self.linearGradientView.linearGradient()
+    }
+    
+    // MARK: Override Mhetods
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
+        cellImage.kf.cancelDownloadTask()
     }
 }

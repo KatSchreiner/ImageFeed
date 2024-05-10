@@ -9,17 +9,15 @@ import Foundation
 
 struct PhotoResult: Codable {
     let id: String
-    let createdAt: Date?
+    let createdAt: String?
     let width: Int
     let height: Int
-    let likes: Int
     let likedByUser: Bool
-    let description: String
-    let urls: URLs
+    let description: String?
+    let urls: UrlsResult
 }
 
-struct URLs: Codable {
-    let raw: String
+struct UrlsResult: Codable {
     let full: String
     let thumb: String
 }

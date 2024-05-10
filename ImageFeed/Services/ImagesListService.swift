@@ -17,61 +17,77 @@ final class ImagesListService {
     private var lastLoadedPage: Int?
     private var isLoaded = false // флаг для отслеживания загрузки
     
-    private func makePhotosRequest(page: Int = 1, perPage: Int = 10) -> URLRequest? {
+    private func makePhotosRequest() -> URLRequest? {
         guard let url = URL(string: "https://api.unsplash.com/photos") else {
-            return nil
-        }
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-        components?.queryItems = [
-            URLQueryItem(name: "page", value: String(page)),
-            URLQueryItem(name: "per_page", value: String(perPage))
-        ]
-        guard let url = components?.url else {
             assertionFailure("[ImagesListService:makePhotosRequest]: ImagesListServiceError - неверный запрос")
             return nil
         }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        if let token = OAuth2Service.shared.oauthToken {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        guard let token = OAuth2Service.shared.oauthToken  else {
+            assertionFailure("[ImagesListService:makePhotosRequest]: ImagesListServiceError - ошибка авторизации")
+            return nil
         }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
         return request
     }
 
-    func fetchPhotosNextPage(completion: @escaping (Result<Photo, Error>) -> Void) {
+    func fetchPhotosNextPage() {
+        // Проверяем, идет ли уже загрузка
         guard !isLoaded else {
-            print("Загрузка уже выполняется")
-            return }
-        isLoaded = true // устанавливаем флаг загрузки
+            return
+        }
+        
+        isLoaded = true
+        
         let nextPage = lastLoadedPage.map { $0 + 1 } ?? 1
-        guard let request = makePhotosRequest(page: nextPage, perPage: 10) else { return }
-        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<PhotoResult, Error>) in
+        
+        guard let request = makePhotosRequest() else {
+            assertionFailure("[ImagesListService:fetchPhotosNextPage]: ImagesListServiceError - неверный запрос")
+            isLoaded = false
+            return
+        }
+        
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
             guard let self = self else { return }
+            
             DispatchQueue.main.async {
                 switch result {
-                case .success(let photoResult):
-                    let newPhoto = Photo(
-                        id: photoResult.id,
-                        size: CGSize(width: photoResult.width, height: photoResult.height),
-                        createdAt: photoResult.createdAt,
-                        welcomeDescription: photoResult.description,
-                        thumbImageURL: photoResult.urls.thumb,
-                        largeImageURL: photoResult.urls.full,
-                        isLiked: photoResult.likedByUser
-                    )
-                    self.photos.append(newPhoto)
+                case .success(let photoResults):
+                    let newPhotos = photoResults.map { photoResult in
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+//                        let createdAt = photoResult.createdAt != nil ? dateFormatter.date(from: photoResult.createdAt ?? "") : nil
+                        
+                        let createdAtString = photoResult.createdAt
+                        let createdAt = dateFormatter.date(from: createdAtString ?? "")
+                        
+                        return Photo(
+                            id: photoResult.id,
+                            size: CGSize(width: photoResult.width, height: photoResult.height),
+                            createdAt: createdAt,
+                            welcomeDescription: photoResult.description,
+                            thumbImageURL: photoResult.urls.thumb,
+                            largeImageURL: photoResult.urls.full,
+                            isLiked: photoResult.likedByUser)
+                    }
+                    
+                    self.photos.append(contentsOf: newPhotos)
                     self.lastLoadedPage = nextPage
-                    completion(.success(newPhoto))
+                    
+                    // Отправка уведомления о том, что данные были обновлены
                     NotificationCenter.default.post(
                         name: ImagesListService.didChangeNotification,
-                        object: self,
-                        userInfo: ["photo": newPhoto] // Добавляем информацию о новой фотографии в userInfo
+                        object: nil
                     )
+                    self.isLoaded = false // Установка флага загрузки в false после обновления данных
                 case .failure(let error):
-                    completion(.failure(error))
                     print("[ImagesListService:fetchPhotosNextPage]: NetworkError - ошибка декодирования")
+                    self.isLoaded = false // Установка флага загрузки в false в случае ошибки
                 }
-                self.isLoaded = false // Сбрасываем флаг загрузки после получения данных
             }
         }
         task.resume()

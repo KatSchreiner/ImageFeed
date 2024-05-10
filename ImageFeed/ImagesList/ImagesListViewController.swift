@@ -43,14 +43,17 @@ final class ImagesListViewController: UIViewController {
             queue: .main
         ) { [weak self] _ in
             guard let self = self else { return }
+            self.updateTableViewAnimated()
         }
+        
+        ImagesListService.shared.fetchPhotosNextPage() 
     }
     
     // функция срабатывает когда приходит нотификация о том, что данные изменились
     func updateTableViewAnimated() {
-        let oldCount = photos.count
+        let oldCount = self.photos.count
         let newCount = ImagesListService.shared.photos.count
-        photos = ImagesListService.shared.photos
+        self.photos = ImagesListService.shared.photos
         if oldCount != newCount {
             tableView.performBatchUpdates {
                 let indexPaths = (oldCount..<newCount).map { i in
@@ -77,35 +80,38 @@ final class ImagesListViewController: UIViewController {
 extension ImagesListViewController: UITableViewDataSource {
     // определяем количество ячеек в секции таблицы
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photos.count
+        return ImagesListService.shared.photos.count
     }
     
     // возвращаем ячейку по идентификатору
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: ImagesListCell.reuseIdentifier,
+            for: indexPath)
+        
         guard let imageListCell = cell as? ImagesListCell else {
             return UITableViewCell()
         }
         
-        imageListCell.configCell(for: imageListCell, with: indexPath)
-        
-        let photo = photos[indexPath.row]
-        
-        // Загрузка изображения с использованием Kingfisher
-        imageListCell.cellImage.kf.setImage(
-            with: URL(string: photo.thumbImageURL),
-            placeholder: UIImage(named: "placeholder_image"),
-            completionHandler: { result in
+        let photos = ImagesListService.shared.photos
+            let photo = photos[indexPath.row]
+
+            // добавляем изображение с использованием Kingfisher
+            imageListCell.cellImage.kf.setImage(
+                with: URL(string: photo.thumbImageURL),
+                placeholder: UIImage(named: "placeholder_image"),
+            options: nil,
+                progressBlock:  nil) { result in
                 switch result {
                 case .success(_):
                     tableView.reloadRows(at: [indexPath], with: .automatic)
                 case .failure(let error):
-                    print("Error loading kf.image: \(error)")
+                    print("[ImagesListCell:configCell]: - ошибка загрузки изображения: \(error.localizedDescription)")
                 }
             }
-        )
         imageListCell.cellImage.kf.indicatorType = .activity
         
+        imageListCell.configCell(for: imageListCell, with: indexPath)
         
         return imageListCell
     }
@@ -113,32 +119,33 @@ extension ImagesListViewController: UITableViewDataSource {
 
 // MARK: UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
-    func tableView(
-        _ tableView: UITableView,
-        willDisplay cell: UITableViewCell,
-        forRowAt IndexPath: IndexPath) {
-            if IndexPath.row + 1 == photos.count {
-                ImagesListService.shared.fetchPhotosNextPage() { _ in }
-            } else {
-                assertionFailure("[ImagesListViewController]: ошибка загрузки")
-            }
-        }
     
     // действия при нажатии на ячейку таблицы
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
     
-    // динамическая высота ячейки
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: photosName[indexPath.row]) else {
-            return 0
+//    динамическая высота ячейки
+   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+       guard let image = UIImage(named: photosName[indexPath.row]) else {
+           return 0
+       }
+       
+       let imageWidth = tableView.bounds.width - tableView.contentInset.left - tableView.contentInset.right
+       let imageHeight = imageWidth * (image.size.height / image.size.width)
+       let padding = tableView.contentInset.top + tableView.contentInset.bottom
+       
+       return imageHeight + padding
+   }
+}
+
+extension ImagesListViewController {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        print("\(indexPath.row)") // DEL
+        
+        if indexPath.row + 1 == ImagesListService.shared.photos.count {
+            ImagesListService.shared.fetchPhotosNextPage()
         }
-        
-        let imageWidth = tableView.bounds.width - tableView.contentInset.left - tableView.contentInset.right
-        let imageHeight = imageWidth * (image.size.height / image.size.width)
-        let padding = tableView.contentInset.top + tableView.contentInset.bottom
-        
-        return imageHeight + padding
     }
 }
+
