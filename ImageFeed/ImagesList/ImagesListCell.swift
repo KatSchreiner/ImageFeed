@@ -9,6 +9,10 @@ import Foundation
 import UIKit
 import Kingfisher
 
+protocol ImagesListCellDelegate: AnyObject {
+    func imageListCellDidTapLike(_ cell: ImagesListCell)
+}
+
 final class ImagesListCell: UITableViewCell {
     
     // MARK: IB Outlets
@@ -19,6 +23,7 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Public Properties
     static let reuseIdentifier = "ImagesListCell"
+    weak var delegate: ImagesListCellDelegate?
     
     // MARK: Private Properties
     private var imagesListViewController = ImagesListViewController()
@@ -31,13 +36,21 @@ final class ImagesListCell: UITableViewCell {
         let dateString = imagesListViewController.dateFormatter.string(from: currentDate)
         self.dateLabel.text = dateString
         
-        if indexPath.row % 2 == 0 {
-            self.likeButton.setImage(UIImage(named: "Active"), for: .normal)
-        } else {
-            self.likeButton.setImage(UIImage(named: "No Active"), for: .normal)
-        }
-        
         self.linearGradientView.linearGradient()
+        
+        self.setIsLiked(false)
+    }
+    // MARK: Private Methods
+    @IBAction private func likeButtonClicked() {
+        delegate?.imageListCellDidTapLike(self)
+    }
+    
+    func setIsLiked(_ isLiked: Bool) {
+        if isLiked {
+            likeButton.setImage(UIImage(named: "Active"), for: .normal)
+        } else {
+            likeButton.setImage(UIImage(named: "No Active"), for: .normal)
+        }
     }
     
     // MARK: Override Mhetods

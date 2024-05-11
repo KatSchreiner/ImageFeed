@@ -92,8 +92,54 @@ final class ImagesListService {
         }
         task.resume()
     }
+    
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: "https://api.unsplash.com/photos/\(photoId)/like") else {
+            completion(.failure(ImagesListServiceError.invalidRequest))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = isLike ? "POST" : "DELETE"
+        
+        guard let token = OAuth2Service.shared.oauthToken else {
+            completion(.failure(ImagesListServiceError.invalidRequest))
+            return
+        }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                    let photo = self.photos[index]
+                    let newPhoto = Photo(
+                        id: photo.id,
+                        size: photo.size,
+                        createdAt: photo.createdAt,
+                        welcomeDescription: photo.welcomeDescription,
+                        thumbImageURL: photo.thumbImageURL,
+                        largeImageURL: photo.largeImageURL,
+                        isLiked: !photo.isLiked
+                    )
+                    self.photos[index] = newPhoto
+                    
+                    completion(.success(()))
+                } else {
+                    completion(.failure(ImagesListServiceError.photoNotFound))
+                }
+            }
+        }
+        task.resume()
+    }
 }
 
 enum ImagesListServiceError: Error {
     case invalidRequest
+    case photoNotFound
 }

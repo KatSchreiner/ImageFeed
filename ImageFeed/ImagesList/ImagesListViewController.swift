@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ProgressHUD
 
 final class ImagesListViewController: UIViewController {
     
@@ -85,19 +86,26 @@ extension ImagesListViewController: UITableViewDataSource {
     
     // возвращаем ячейку по идентификатору
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
+//        let cell = tableView.dequeueReusableCell(
+//            withIdentifier: ImagesListCell.reuseIdentifier,
+//            for: indexPath)
+//        
+//        guard let imageListCell = cell as? ImagesListCell else {
+//            return UITableViewCell()
+//        }
+//        
+        guard let cell = tableView.dequeueReusableCell(
             withIdentifier: ImagesListCell.reuseIdentifier,
-            for: indexPath)
-        
-        guard let imageListCell = cell as? ImagesListCell else {
-            return UITableViewCell()
+            for: indexPath) as? ImagesListCell else {
+                return UITableViewCell()
         }
+        cell.delegate = self // Установка делегата
         
         let photos = ImagesListService.shared.photos
             let photo = photos[indexPath.row]
 
             // добавляем изображение с использованием Kingfisher
-            imageListCell.cellImage.kf.setImage(
+            cell.cellImage.kf.setImage(
                 with: URL(string: photo.thumbImageURL),
                 placeholder: UIImage(named: "placeholder_image"),
             options: nil,
@@ -109,11 +117,11 @@ extension ImagesListViewController: UITableViewDataSource {
                     print("[ImagesListCell:configCell]: - ошибка загрузки изображения: \(error.localizedDescription)")
                 }
             }
-        imageListCell.cellImage.kf.indicatorType = .activity
+        cell.cellImage.kf.indicatorType = .activity
         
-        imageListCell.configCell(for: imageListCell, with: indexPath)
+        cell.configCell(for: cell, with: indexPath)
         
-        return imageListCell
+        return cell
     }
 }
 
@@ -149,3 +157,44 @@ extension ImagesListViewController {
     }
 }
 
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        // Обработка действия нажатия на "лайк" в ячейке
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+              
+        UIBlockingProgressHUD.show()
+        
+        ImagesListService.shared.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+            switch result {
+            case .success:
+                self.photos[indexPath.row].isLiked = !self.photos[indexPath.row].isLiked
+                DispatchQueue.main.async {
+                    cell.setIsLiked(self.photos[indexPath.row].isLiked)
+                }
+                
+                // Уберём лоадер
+                UIBlockingProgressHUD.dismiss()
+            case .failure:
+                // Уберём лоадер
+                UIBlockingProgressHUD.dismiss()
+                DispatchQueue.main.async {
+                    AlertPresenter.showAlertError(
+                        in: self,
+                        title: "Что-то пошло не так(",
+                        message: "Не удалось поставить лайк")
+                }
+            }
+        }
+    }
+    
+//    private func showError() {
+//            let alert = UIAlertController(title: "Ошибка", message: "Что-то пошло не так. Попробовать ещё раз?", preferredStyle: .alert)
+//            alert.addAction(UIAlertAction(title: "Не надо", style: .cancel, handler: nil))
+//            alert.addAction(UIAlertAction(title: "Повторить", style: .default, handler: { _ in
+//                // Retry loading image here
+//            }))
+//            
+//            present(alert, animated: true, completion: nil)
+//        }
+}
