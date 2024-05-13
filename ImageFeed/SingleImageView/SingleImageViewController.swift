@@ -55,7 +55,6 @@ final class SingleImageViewController: UIViewController {
         }
         
         UIBlockingProgressHUD.show()
-        imageView.kf.indicatorType = .activity
         imageView.kf.setImage(with: url) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             
@@ -71,8 +70,6 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
-        let minZoomScale = scrollView.minimumZoomScale
-        let maxZoomScale = scrollView.maximumZoomScale
         view.layoutIfNeeded()
         guard let scrollViewSize = scrollView?.bounds.size else { return }
         let imageSize = image.size

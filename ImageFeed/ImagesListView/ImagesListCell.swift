@@ -19,7 +19,14 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Public Properties
     static let reuseIdentifier = "ImagesListCell"
-    
+    var  dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "d MMMM yyyy"
+        return formatter
+    }
     weak var delegate: ImagesListCellDelegate?
     
     // MARK: Private Properties
@@ -27,15 +34,19 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Public Methods
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        
+        guard UIImage(named: "placeholder") != nil else {
+            return
+        }
         let currentDate = Date()
-        let dateString = imagesListViewController.dateFormatter.string(from: currentDate)
+        let dateString = dateFormatter.string(from: currentDate)
         self.dateLabel.text = dateString
         
         self.linearGradientView.linearGradient()
         
         self.setIsLiked(false)
+
     }
+    
     // MARK: Private Methods
     func setIsLiked(_ isLiked: Bool) {
         if isLiked {
@@ -43,7 +54,6 @@ final class ImagesListCell: UITableViewCell {
         } else {
             likeButton.setImage(UIImage(named: "No Active"), for: .normal)
         }
-        
     }
     
     @IBAction private func likeButtonClicked() {

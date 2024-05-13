@@ -13,21 +13,11 @@ final class ImagesListViewController: UIViewController {
     // MARK: IB Outlets
     @IBOutlet weak private var tableView: UITableView!
     
-    // MARK: Public Properties
-    var  dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "d MMMM yyyy"
-        return formatter
-    }
-    
     // MARK: Private Properties
     private let imagesListService = ImagesListService.shared
     private var imagesListServiceObserver: NSObjectProtocol?
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    private var photos: [Photo] = []
+    var photos: [Photo] = []
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -53,12 +43,14 @@ final class ImagesListViewController: UIViewController {
         let newCount = ImagesListService.shared.photos.count
         self.photos = ImagesListService.shared.photos
         if oldCount != newCount {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            } completion: { _ in }
+            DispatchQueue.main.async {
+                self.tableView.performBatchUpdates {
+                    let indexPaths = (oldCount..<newCount).map { i in
+                        IndexPath(row: i, section: 0)
+                    }
+                    self.tableView.insertRows(at: indexPaths, with: .automatic)
+                } completion: { _ in }
+            }
         }
     }
     
@@ -96,11 +88,8 @@ extension ImagesListViewController: UITableViewDataSource {
         let photos = ImagesListService.shared.photos
         let photo = photos[indexPath.row]
 
-        cell.cellImage.kf.setImage(
-            with: URL(string: photo.thumbImageURL),
-            placeholder: UIImage(named: "placeholder_image"),
-            options: nil,
-            progressBlock:  nil) { result in
+        cell.cellImage.kf.indicatorType = .activity
+        cell.cellImage.kf.setImage(with: URL(string: photo.thumbImageURL)) { result in
                 switch result {
                 case .success(_):
                     tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -108,7 +97,6 @@ extension ImagesListViewController: UITableViewDataSource {
                     print("[ImagesListCell:configCell]: - ошибка загрузки изображения: \(error.localizedDescription)")
                 }
             }
-        cell.cellImage.kf.indicatorType = .activity
         
         cell.configCell(for: cell, with: indexPath)
         
@@ -128,7 +116,7 @@ extension ImagesListViewController: UITableViewDelegate {
        let imageWidth = tableView.bounds.width - tableView.contentInset.left - tableView.contentInset.right
        let imageHeight = imageWidth * (imageSize.height / imageSize.width)
        let padding = tableView.contentInset.top + tableView.contentInset.bottom
-       
+
        return imageHeight + padding
    }
 }
