@@ -98,7 +98,7 @@ extension ImagesListViewController: UITableViewDataSource {
                 }
             }
         
-        cell.configCell(for: cell, with: indexPath)
+        cell.configCell(for: cell, with: indexPath, createdAt: photo.createdAt)
         
         return cell
     }

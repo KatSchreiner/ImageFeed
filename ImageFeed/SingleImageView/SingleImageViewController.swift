@@ -23,6 +23,7 @@ final class SingleImageViewController: UIViewController {
         scrollView.delegate = self
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
+        
         loadImage()
         
         scrollView.contentInsetAdjustmentBehavior = .never
@@ -49,7 +50,7 @@ final class SingleImageViewController: UIViewController {
     
     private func loadImage() {
         guard let fullImageUrl = fullImageUrl, let url = URL(string: fullImageUrl) else {
-            print("[SingleImageViewController: loadImage] - неверный URL изображения")
+            print("[SingleImageViewController: loadImage] - изображение не загрузилось")
             showError()
             return
         }
@@ -64,6 +65,10 @@ final class SingleImageViewController: UIViewController {
                 let image = imageResult.image
                 self.rescaleAndCenterImageInScrollView(image: image)
             case .failure(_):
+                if let placeholder = UIImage(named: "placeholder") {
+                    self.imageView.image = placeholder
+                    self.rescaleAndCenterImageInScrollView(image: placeholder)
+                }
                 self.showError()
             }
         }
@@ -87,11 +92,20 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func showError() {
-        let alert = UIAlertController(title: "Ошибка", message: "Что-то пошло не так. Попробовать ещё раз?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Не надо", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Повторить", style: .default, handler: { _ in
-            self.loadImage()
-        }))
+        let alert = UIAlertController(
+            title: "Ошибка",
+            message: "Что-то пошло не так. Попробовать ещё раз?",
+            preferredStyle: .alert)
+        alert.addAction(UIAlertAction(
+            title: "Нет",
+            style: .default,
+            handler: nil))
+        alert.addAction(UIAlertAction(
+            title: "Да",
+            style: .default,
+            handler: { _ in
+                self.loadImage()
+            }))
         
         present(alert, animated: true, completion: nil)
     }

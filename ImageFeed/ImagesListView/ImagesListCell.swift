@@ -19,32 +19,41 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Public Properties
     static let reuseIdentifier = "ImagesListCell"
-    var  dateFormatter: DateFormatter {
+    static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
+        formatter.dateFormat = "dd MMMM yyyy"
         formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "d MMMM yyyy"
+        
         return formatter
-    }
+    }()
+    
     weak var delegate: ImagesListCellDelegate?
     
     // MARK: Private Properties
-    private var imagesListViewController = ImagesListViewController()
+    private var createdAt: Date?
+    private let placeholderImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "placeholder"))
+        imageView.contentMode = .center
+        return imageView
+    }()
     
     // MARK: Public Methods
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard UIImage(named: "placeholder") != nil else {
+    func configCell(for cell: ImagesListCell, with indexPath: IndexPath, createdAt: Date?) {
+        guard let createdAt = createdAt else {
+            assertionFailure("[ImagesListCell: configCell]: невозможно загрузить дату")
             return
         }
-        let currentDate = Date()
-        let dateString = dateFormatter.string(from: currentDate)
-        self.dateLabel.text = dateString
+        
+        let dateString = ImagesListCell.dateFormatter.string(from: createdAt)
+        dateLabel.text = dateString
         
         self.linearGradientView.linearGradient()
         
         self.setIsLiked(false)
-
+        
+        self.backgroundView = placeholderImageView
     }
     
     // MARK: Private Methods
@@ -63,7 +72,6 @@ final class ImagesListCell: UITableViewCell {
     // MARK: Override Mhetods
     override func prepareForReuse() {
         super.prepareForReuse()
-        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
         cellImage.kf.cancelDownloadTask()
     }
 }

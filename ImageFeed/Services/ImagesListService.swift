@@ -59,11 +59,9 @@ final class ImagesListService {
                 switch result {
                 case .success(let photoResults):
                     let newPhotos = photoResults.map { photoResult in
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "yyyy-MM-dd"
-                        
+                        let dateFormatter = ISO8601DateFormatter()
                         let createdAtString = photoResult.createdAt
-                        let createdAt = dateFormatter.date(from: createdAtString ?? "")
+                        let createdAt = createdAtString.flatMap { dateFormatter.date(from: $0) }
                         
                         return Photo(
                             id: photoResult.id,
@@ -103,7 +101,7 @@ final class ImagesListService {
         request.httpMethod = isLike ? "POST" : "DELETE"
         
         guard let token = OAuth2Service.shared.oauthToken else {
-            print("[changeLike: token]: ImagesListServiceError - ошибка авторизации")
+            print("[ImagesListService: changeLike: token]: ImagesListServiceError - ошибка авторизации")
             completion(.failure(ImagesListServiceError.invalidRequest))
             return
         }
@@ -131,7 +129,7 @@ final class ImagesListService {
                     completion(.success(()))
                 case .failure(let error):
                     completion(.failure(error))
-                    print("[ImagesListService:changeLike]: NetworkError - ошибка декодирования")
+                    print("[ImagesListService: changeLike]: NetworkError - ошибка декодирования")
                 }
             }
         }

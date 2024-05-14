@@ -67,12 +67,37 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - IB Actions
+    
     @objc private func didTapLogoutButton() {
-        ProfileLogoutService.shared.logout()
-        guard let window = UIApplication.shared.windows.first else {
-            fatalError("[ProfileViewController: didTapLogoutButton - ошибка")
+        let alert = UIAlertController(
+            title: "Пока, пока",
+            message: "Уверены что хотите выйти?",
+            preferredStyle: .alert
+        )
+        
+        let confirmAction = UIAlertAction(
+            title: "Да",
+            style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                
+                ProfileLogoutService.shared.logout()
+                
+                let splashViewController = SplashViewController()
+                if let window = UIApplication.shared.windows.first {
+                    window.rootViewController = splashViewController
+            }
         }
-        window.rootViewController = SplashViewController()
+        
+        let cancelAction = UIAlertAction(
+            title: "Нет",
+            style: .default,
+            handler: nil
+        )
+        
+        alert.addAction(confirmAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Private Methods
