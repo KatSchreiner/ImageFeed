@@ -7,6 +7,9 @@
 
 import Foundation
 
-struct Like: Codable {
-    let photo: PhotoResult
+struct LikeResult: Codable {
+    let photo: likedImage
+}
+struct likedImage: Codable {
+    let likedByUser: Bool
 }

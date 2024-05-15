@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C11EB9782BF4266300163D56 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11EB9772BF4266300163D56 /* DateFormatter.swift */; };
 		C136CA902BD64CD100E43028 /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA8F2BD64CD100E43028 /* UIBlockingProgressHUD.swift */; };
 		C136CA922BD6600300E43028 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA912BD6600300E43028 /* ProfileService.swift */; };
 		C136CA942BD662CC00E43028 /* ProfileResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136CA932BD662CC00E43028 /* ProfileResult.swift */; };
@@ -49,6 +50,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C11EB9772BF4266300163D56 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		C136CA8F2BD64CD100E43028 /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		C136CA912BD6600300E43028 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		C136CA932BD662CC00E43028 /* ProfileResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResult.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 				C136CA8F2BD64CD100E43028 /* UIBlockingProgressHUD.swift */,
 				C1B5A79A2BC3426200DDE2F9 /* OAuth2TokenStorage.swift */,
 				C1FF941B2BB76836001C8F2D /* Constants.swift */,
+				C11EB9772BF4266300163D56 /* DateFormatter.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -358,6 +361,7 @@
 				C1B5A7992BC21D8800DDE2F9 /* OAuthTokenResponseBody.swift in Sources */,
 				C136CA922BD6600300E43028 /* ProfileService.swift in Sources */,
 				C136CA9C2BDABB3100E43028 /* AlertPresenter.swift in Sources */,
+				C11EB9782BF4266300163D56 /* DateFormatter.swift in Sources */,
 				C145388A2B9122E1003535E5 /* SceneDelegate.swift in Sources */,
 				C136CA982BD832F000E43028 /* ProfileImageService.swift in Sources */,
 				C1B5A79B2BC3426200DDE2F9 /* OAuth2TokenStorage.swift in Sources */,

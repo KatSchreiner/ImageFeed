@@ -19,16 +19,7 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Public Properties
     static let reuseIdentifier = "ImagesListCell"
-    static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        formatter.dateFormat = "dd MMMM yyyy"
-        formatter.locale = Locale(identifier: "ru_RU")
-        
-        return formatter
-    }()
-    
+
     weak var delegate: ImagesListCellDelegate?
     
     // MARK: Private Properties
@@ -41,13 +32,13 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Public Methods
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath, createdAt: Date?) {
-        guard let createdAt = createdAt else {
-            assertionFailure("[ImagesListCell: configCell]: невозможно загрузить дату")
-            return
-        }
         
-        let dateString = ImagesListCell.dateFormatter.string(from: createdAt)
-        dateLabel.text = dateString
+        if let date = createdAt {
+            let dateString = DateFormatters.shared.dateFormatter.string(from: date)
+            dateLabel.text = dateString
+        } else {
+            dateLabel.text = ""
+        }
         
         self.linearGradientView.linearGradient()
         
@@ -58,11 +49,8 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Private Methods
     func setIsLiked(_ isLiked: Bool) {
-        if isLiked {
-            likeButton.setImage(UIImage(named: "Active"), for: .normal)
-        } else {
-            likeButton.setImage(UIImage(named: "No Active"), for: .normal)
-        }
+        let image = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
+        likeButton.setImage(image, for: .normal)
     }
     
     @IBAction private func likeButtonClicked() {

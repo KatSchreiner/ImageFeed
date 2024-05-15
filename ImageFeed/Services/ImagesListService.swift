@@ -18,7 +18,8 @@ final class ImagesListService {
         photos = []
     }
     private var lastLoadedPage: Int?
-    private var isLoaded = false // флаг для отслеживания загрузки
+    private var isLoading = false // флаг для отслеживания загрузки
+    private var task: URLSessionTask?
     
     private func makePhotosRequest() -> URLRequest? {
         guard let url = URL(string: "https://api.unsplash.com/photos") else {
@@ -38,17 +39,17 @@ final class ImagesListService {
     }
     
     func fetchPhotosNextPage() {
-        guard !isLoaded else {
+        guard !isLoading else {
             return
         }
         
-        isLoaded = true
+        isLoading = true
         
         let nextPage = lastLoadedPage.map { $0 + 1 } ?? 1
         
         guard let request = makePhotosRequest() else {
             assertionFailure("[ImagesListService: fetchPhotosNextPage]: ImagesListServiceError - неверный запрос")
-            isLoaded = false
+            isLoading = false
             return
         }
         
@@ -59,14 +60,10 @@ final class ImagesListService {
                 switch result {
                 case .success(let photoResults):
                     let newPhotos = photoResults.map { photoResult in
-                        let dateFormatter = ISO8601DateFormatter()
-                        let createdAtString = photoResult.createdAt
-                        let createdAt = createdAtString.flatMap { dateFormatter.date(from: $0) }
-                        
                         return Photo(
                             id: photoResult.id,
                             size: CGSize(width: photoResult.width, height: photoResult.height),
-                            createdAt: createdAt,
+                            createdAt: DateFormatters.shared.date(from: photoResult.createdAt),
                             welcomeDescription: photoResult.description,
                             thumbImageURL: photoResult.urls.thumb,
                             largeImageURL: photoResult.urls.full,
@@ -80,20 +77,25 @@ final class ImagesListService {
                         name: ImagesListService.didChangeNotification,
                         object: nil
                     )
-                    self.isLoaded = false
+                    self.isLoading = false
                 case .failure(_):
                     print("[ImagesListService: fetchPhotosNextPage]: NetworkError - ошибка декодирования")
-                    self.isLoaded = false
+                    self.isLoading = false
                 }
             }
         }
         task.resume()
     }
     
-    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Bool, Error>) -> Void) {
+        
+        if task != nil {
+            task?.cancel()
+        }
+        
         guard let url = URL(string: "https://api.unsplash.com/photos/\(photoId)/like") else {
-            completion(.failure(ImagesListServiceError.invalidRequest))
             print("[ImagesListService: changeLike]: ImagesListServiceError - неверный запрос")
+            completion(.failure(ImagesListServiceError.invalidRequest))
             return
         }
         
@@ -107,12 +109,15 @@ final class ImagesListService {
         }
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<Like, Error>) in
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<LikeResult, Error>) in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
                 switch result {
-                case .success(_):
+                case .success(let result):
+                    
+                    let isLiked = result.photo.likedByUser
+                    
                     if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
                         let photo = self.photos[index]
                         let newPhoto = Photo(
@@ -126,13 +131,16 @@ final class ImagesListService {
                         )
                         self.photos[index] = newPhoto
                     }
-                    completion(.success(()))
+                    completion(.success(isLiked))
+                    self.task = nil
                 case .failure(let error):
                     completion(.failure(error))
                     print("[ImagesListService: changeLike]: NetworkError - ошибка декодирования")
+                    completion(.failure(error))
                 }
             }
         }
+        self.task = task
         task.resume()
     }
     
