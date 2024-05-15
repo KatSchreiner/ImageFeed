@@ -87,6 +87,7 @@ extension ImagesListViewController: UITableViewDataSource {
         
         let photos = ImagesListService.shared.photos
         let photo = photos[indexPath.row]
+        cell.setIsLiked(photo.isLiked)
 
         cell.cellImage.kf.indicatorType = .activity
         cell.cellImage.kf.setImage(with: URL(string: photo.thumbImageURL)) { result in
