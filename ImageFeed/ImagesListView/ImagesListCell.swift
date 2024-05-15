@@ -34,11 +34,10 @@ final class ImagesListCell: UITableViewCell {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath, createdAt: Date?) {
         
         if let date = createdAt {
-            let dateString = DateFormatters.shared.dateFormatter.string(from: date)
-            dateLabel.text = dateString
-        } else {
-            dateLabel.text = ""
-        }
+                    dateLabel.text = formatDate(date)
+                } else {
+                    dateLabel.text = ""
+                }
         
         self.linearGradientView.linearGradient()
         
@@ -48,6 +47,13 @@ final class ImagesListCell: UITableViewCell {
     }
     
     // MARK: Private Methods
+    private func formatDate(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        dateFormatter.dateFormat = "d MMMM yyyy"
+        return dateFormatter.string(from: date)
+    }
+    
     func setIsLiked(_ isLiked: Bool) {
         let image = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
         likeButton.setImage(image, for: .normal)
