@@ -17,7 +17,11 @@ final class ProfileImageService {
     private var task: URLSessionTask?
     private var imageUser: String?
     
-    private(set) var avatarURL: String?
+    //private(set) var avatarURL: String?
+    private (set) var avatarURL: String?
+    func cleanAvatarURL() {
+        avatarURL = nil
+    }
 
     private func makeProfileImageRequest(username: String) -> URLRequest? {
         let path = "/users/\(username)"

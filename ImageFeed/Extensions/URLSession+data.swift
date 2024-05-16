@@ -57,7 +57,7 @@ extension URLSession {
                     completion(.failure(NetworkError.decodingError))
                     print("Ошибка декодирования: \(error.localizedDescription), Данные: \(String(data: data, encoding: .utf8) ?? "")")
                 }
-            case .failure(let error):
+            case .failure(_):
                 completion(.failure(NetworkError.urlSessionError))
                 print("Ошибка URLSession: не было получено данных или ответа: \(NetworkError.urlSessionError.localizedDescription)")
 

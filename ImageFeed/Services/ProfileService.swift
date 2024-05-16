@@ -12,6 +12,9 @@ final class ProfileService {
     private init() {}
     
     private(set) var profile: Profile?
+    func cleanProfile() {
+        profile = nil
+    }
     private var task: URLSessionTask?
     private var dataProfile: String?
 
