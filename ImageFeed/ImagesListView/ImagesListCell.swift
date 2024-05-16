@@ -19,7 +19,7 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: Public Properties
     static let reuseIdentifier = "ImagesListCell"
-
+    
     weak var delegate: ImagesListCellDelegate?
     
     // MARK: Private Properties
@@ -34,14 +34,12 @@ final class ImagesListCell: UITableViewCell {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath, createdAt: Date?) {
         
         if let date = createdAt {
-                    dateLabel.text = formatDate(date)
-                } else {
-                    dateLabel.text = ""
-                }
+            dateLabel.text = formatDate(date)
+        } else {
+            dateLabel.text = ""
+        }
         
         self.linearGradientView.linearGradient()
-        
-        self.setIsLiked(false)
         
         self.backgroundView = placeholderImageView
     }
@@ -56,6 +54,7 @@ final class ImagesListCell: UITableViewCell {
     
     func setIsLiked(_ isLiked: Bool) {
         let image = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
+        
         likeButton.setImage(image, for: .normal)
     }
     

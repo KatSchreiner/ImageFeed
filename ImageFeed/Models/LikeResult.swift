@@ -10,6 +10,7 @@ import Foundation
 struct LikeResult: Codable {
     let photo: likedImage
 }
+
 struct likedImage: Codable {
     let likedByUser: Bool
 }

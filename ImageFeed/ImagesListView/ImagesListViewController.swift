@@ -88,7 +88,7 @@ extension ImagesListViewController: UITableViewDataSource {
         let photos = ImagesListService.shared.photos
         let photo = photos[indexPath.row]
         cell.setIsLiked(photo.isLiked)
-
+        
         cell.cellImage.kf.indicatorType = .activity
         cell.cellImage.kf.setImage(with: URL(string: photo.thumbImageURL)) { result in
                 switch result {
@@ -133,24 +133,23 @@ extension ImagesListViewController {
 }
 
 extension ImagesListViewController: ImagesListCellDelegate {
+    
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
+
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let photo = photos[indexPath.row]
         
         UIBlockingProgressHUD.show()
-        imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { [weak self] result in
-            guard let self = self else { return }
-            
-            UIBlockingProgressHUD.dismiss()
-            
+        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
             switch result {
-            case .success:
+            case .success(let isLiked):
                 self.photos = self.imagesListService.photos
-                let isLiked = self.photos[indexPath.row].isLiked
+                self.photos[indexPath.row].isLiked = isLiked
                 cell.setIsLiked(isLiked)
                 
-                case .failure:
-                   UIBlockingProgressHUD.dismiss()
+                UIBlockingProgressHUD.dismiss()
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
                 DispatchQueue.main.async {
                     AlertPresenter.showAlertError(
                         in: self,
@@ -160,4 +159,4 @@ extension ImagesListViewController: ImagesListCellDelegate {
             }
         }
     }
-}
+} 

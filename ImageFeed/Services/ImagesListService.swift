@@ -109,7 +109,8 @@ final class ImagesListService {
         }
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<LikeResult, Error>) in
+        let session = URLSession.shared
+        let task = session.objectTask(for: request) { [weak self] (result: Result<LikeResult, Error>) in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
@@ -120,6 +121,7 @@ final class ImagesListService {
                     
                     if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
                         let photo = self.photos[index]
+
                         let newPhoto = Photo(
                             id: photo.id,
                             size: photo.size,
@@ -129,6 +131,7 @@ final class ImagesListService {
                             largeImageURL: photo.largeImageURL,
                             isLiked: !photo.isLiked
                         )
+
                         self.photos[index] = newPhoto
                     }
                     completion(.success(isLiked))
@@ -143,7 +146,6 @@ final class ImagesListService {
         self.task = task
         task.resume()
     }
-    
 }
 
 enum ImagesListServiceError: Error {
