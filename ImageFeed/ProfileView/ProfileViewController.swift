@@ -13,26 +13,26 @@ final class ProfileViewController: UIViewController {
     // MARK: - Private Properties
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    private let userPhoto: UIImageView = {
+    private lazy var userPhoto: UIImageView = {
         let imageProfile = UIImage(named: "Photo")
         let userPhoto = UIImageView(image: imageProfile)
         userPhoto.layer.cornerRadius = 35
         userPhoto.clipsToBounds = true
         return userPhoto
     }()
-    private let nameLabel: UILabel = {
+    private lazy var nameLabel: UILabel = {
         let nameLabel = UILabel()
         return nameLabel
     }()
-    private let loginLabel: UILabel = {
+    private lazy var loginLabel: UILabel = {
         let loginLabel = UILabel()
         return loginLabel
     }()
-    private let descriptionLabel: UILabel = {
+    private lazy var descriptionLabel: UILabel = {
         let descriptionLabel = UILabel()
         return descriptionLabel
     }()
-    private let logoutButton: UIButton = {
+    private lazy var logoutButton: UIButton = {
         let logoutButton = UIButton(type: .system)
         return logoutButton
     }()
