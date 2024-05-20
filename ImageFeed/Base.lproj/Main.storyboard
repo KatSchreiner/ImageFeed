@@ -70,7 +70,7 @@
                                                     <rect key="frame" x="16" y="166" width="382" height="30"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="26 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vFF-Wy-J83" userLabel="Date label">
-                                                            <rect key="frame" x="8" y="4" width="94.5" height="18"/>
+                                                            <rect key="frame" x="8" y="4" width="97" height="18"/>
                                                             <accessibility key="accessibilityConfiguration" identifier="dateLabel">
                                                                 <accessibilityTraits key="traits" staticText="YES"/>
                                                             </accessibility>
@@ -283,7 +283,7 @@
         <!--WebView -->
         <scene sceneID="ohW-RC-mFy">
             <objects>
-                <viewController id="eI9-Bg-YaR" userLabel="WebView " customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="eI9-Bg-YaR" userLabel="WebView " customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mao-O7-dRL">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
