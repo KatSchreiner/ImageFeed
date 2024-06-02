@@ -1,12 +1,12 @@
 //
 //  WebViewViewControllerSpy.swift
-//  ImageFeed
+//  ImageFeedTests
 //
-//  Created by Екатерина Шрайнер on 17.05.2024.
+//  Created by Екатерина Шрайнер on 02.06.2024.
 //
 
-import ImageFeed
 import Foundation
+import ImageFeed
 
 final class WebViewViewControllerSpy: WebViewControllerProtocol {
     var presenter: ImageFeed.WebViewPresenterProtocol?
@@ -17,11 +17,8 @@ final class WebViewViewControllerSpy: WebViewControllerProtocol {
         loadRequestCalled = true
     }
     
-    func setProgressValue(_ newValue: Float) {
-        
-    }
+    func setProgressValue(_ newValue: Float) {}
     
-    func setProgressHidden(_ isHidden: Bool) {
-        
-    }
+    func setProgressHidden(_ isHidden: Bool) {}
 }
+

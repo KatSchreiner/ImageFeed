@@ -1,8 +1,8 @@
 //
 //  WebViewPresenterSpy.swift
-//  ImageFeed
+//  ImageFeedTests
 //
-//  Created by Екатерина Шрайнер on 17.05.2024.
+//  Created by Екатерина Шрайнер on 02.06.2024.
 //
 
 import ImageFeed

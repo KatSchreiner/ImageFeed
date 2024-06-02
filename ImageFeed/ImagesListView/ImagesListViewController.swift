@@ -8,32 +8,37 @@
 import UIKit
 import ProgressHUD
 
-protocol ImagesListViewControllerProtocol: AnyObject {
+public protocol ImagesListViewControllerProtocol: AnyObject {
     var presenter: ImagesListViewPresenterProtocol? { get set }
-    var tableView: UITableView! { get set }
-    func showDidTapLikeError()
+    func updateTableViewAnimated()
 }
 
 final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
+    // MARK: IB Outlets
+    @IBOutlet weak private var tableView: UITableView!
+    
+    // MARK: Public Properties
     var presenter: ImagesListViewPresenterProtocol?
     
-    // MARK: IB Outlets
-    @IBOutlet weak var tableView: UITableView!
-    
     // MARK: Private Properties
+    private let imagesListService = ImagesListService.shared
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    
+    var photos: [Photo] = []
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter = ImagesListViewPresenter(view: self)
+        
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         tableView.delegate = self
         tableView.dataSource = self
-        presenter?.viewDidLoad()
-        ImagesListService.shared.fetchPhotosNextPage()
+        
+        presenter?.addNotification()
+        
+        presenter?.fetchPhotosNextPage()
     }
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showSingleImageSegueIdentifier {
             guard let viewController = segue.destination as? SingleImageViewController,
@@ -41,8 +46,8 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
                 assertionFailure("Invalid segue destination")
                 return
             }
-            guard let presenter = presenter else { return }
-            let fullImageUrl = presenter.photos[indexPath.row].largeImageURL
+            
+            let fullImageUrl = photos[indexPath.row].largeImageURL
             viewController.imageToURL(fullImageUrl: fullImageUrl)
         } else {
             super.prepare(for: segue, sender: sender)
@@ -53,8 +58,7 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
 // MARK: UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let presenter else { return 0 }
-        return presenter.photos.count
+        return photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -94,8 +98,7 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-       guard let presenter else { return CGFloat() }
-       let imageSize = presenter.photos[indexPath.row].size
+       let imageSize = photos[indexPath.row].size
        let imageWidth = tableView.bounds.width - tableView.contentInset.left - tableView.contentInset.right
        let imageHeight = imageWidth * (imageSize.height / imageSize.width)
        let padding = tableView.contentInset.top + tableView.contentInset.bottom
@@ -104,28 +107,61 @@ extension ImagesListViewController: UITableViewDelegate {
    }
 }
 
+// MARK: ImagesListViewController
 extension ImagesListViewController {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        print("\(indexPath.row)") // DEL
         
         if indexPath.row + 1 == ImagesListService.shared.photos.count {
             ImagesListService.shared.fetchPhotosNextPage()
         }
     }
+    
+    func updateTableViewAnimated() {
+        let oldCount = self.photos.count
+        let newCount = ImagesListService.shared.photos.count
+        self.photos = ImagesListService.shared.photos
+        if oldCount != newCount {
+            DispatchQueue.main.async {
+                self.tableView.performBatchUpdates {
+                    let indexPaths = (oldCount..<newCount).map { i in
+                        IndexPath(row: i, section: 0)
+                    }
+                    self.tableView.insertRows(at: indexPaths, with: .automatic)
+                } completion: { _ in }
+            }
+        }
+    }
 }
 
+// MARK: ImagesListCellDelegate
 extension ImagesListViewController: ImagesListCellDelegate {
     
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
-        presenter?.didTapLike(cell)
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        
+        UIBlockingProgressHUD.show()
+        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+            switch result {
+            case .success(let isLiked):
+                self.photos = self.imagesListService.photos
+                self.photos[indexPath.row].isLiked = isLiked
+                cell.setIsLiked(isLiked)
+                
+                UIBlockingProgressHUD.dismiss()
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                DispatchQueue.main.async {
+                    self.tapLikeShowError()
+                }
+            }
+        }
     }
     
-    func showDidTapLikeError() {
-        DispatchQueue.main.async {
-            AlertPresenter.showAlertError(
-                in: self,
-                title: "Что-то пошло не так(",
-                message: "Не удалось поставить лайк")
-        }
+    func tapLikeShowError() {
+        AlertPresenter.showAlertError(
+            in: self,
+            title: "Что-то пошло не так(",
+            message: "Не удалось поставить лайк")
     }
 }
