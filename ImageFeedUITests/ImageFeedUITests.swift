@@ -28,7 +28,7 @@ class ImageFeedUITests: XCTestCase {
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         
         loginTextField.tap()
-        loginTextField.typeText("04kat86@gmail.com")
+        loginTextField.typeText(email)
         
         let keyboard = app.buttons["Done"]
         keyboard.tap()
@@ -37,7 +37,7 @@ class ImageFeedUITests: XCTestCase {
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         
         passwordTextField.tap()
-        passwordTextField.typeText("1187mLk4576$")
+        passwordTextField.typeText(password)
         
         keyboard.tap()
         
