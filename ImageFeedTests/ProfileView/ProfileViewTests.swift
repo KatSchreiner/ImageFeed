@@ -10,7 +10,7 @@ import XCTest
 
 final class ProfileViewTests: XCTestCase {
     
-    func testViewControllerCallsAddNotification() {
+    func testCallsAddNotification() {
         //given
         let viewController = ProfileViewController()
         let presenter = ProfileViewPresenterSpy()
@@ -25,7 +25,7 @@ final class ProfileViewTests: XCTestCase {
         XCTAssertTrue(presenter.addNotificationCalled)
     }
     
-    func testViewControllerCallsUpdateProfile() {
+    func testCallsUpdateProfile() {
         //given
         let viewController = ProfileViewController()
         let presenter = ProfileViewPresenterSpy()
@@ -40,7 +40,7 @@ final class ProfileViewTests: XCTestCase {
         XCTAssertTrue(presenter.updateProfileCalled)
     }
     
-    func testViewControllerCallsUpdateAvatar() {
+    func testCallsUpdateAvatar() {
         //given
         let viewController = ProfileViewController()
         let presenter = ProfileViewPresenterSpy()
@@ -55,7 +55,7 @@ final class ProfileViewTests: XCTestCase {
         XCTAssertTrue(presenter.updateAvatarCalled)
     }
     
-    func testViewControllerCallsProfileLogout() {
+    func testCallsProfileLogout() {
         //given
         let viewController = ProfileViewController()
         let presenter = ProfileViewPresenterSpy()
@@ -70,7 +70,7 @@ final class ProfileViewTests: XCTestCase {
         XCTAssertTrue(presenter.profileLogoutCalled)
     }
     
-    func testViewControllerCallsUpdateProfileDetails() {
+    func testCallsUpdateProfileDetails() {
         //given
         let viewController = ProfileViewControllerSpy()
         let presenter = ProfileViewPresenter()
@@ -85,7 +85,7 @@ final class ProfileViewTests: XCTestCase {
         XCTAssertTrue(viewController.updateProfileDetailsCalled)
     }
     
-    func testViewControllerCallsSetUserPhoto() {
+    func testCallsSetUserPhoto() {
         //given
         let viewController = ProfileViewControllerSpy()
         let presenter = ProfileViewPresenter()

@@ -163,7 +163,7 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="Qt3-W9-Jlv"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="QOy-6G-OZk"/>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IDd-ph-8NT" userLabel="Back Button">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IDd-ph-8NT" userLabel="Backward">
                                 <rect key="frame" x="9" y="9" width="48" height="48"/>
                                 <accessibility key="accessibilityConfiguration" identifier="Back Button"/>
                                 <constraints>

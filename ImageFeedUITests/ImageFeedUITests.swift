@@ -9,8 +9,8 @@ import XCTest
 
 class ImageFeedUITests: XCTestCase {
     private let app = XCUIApplication()
-    private let eMail: String = ""
-    private let pass: String = ""
+    private let email: String = ""
+    private let password: String = ""
     private let nameProfile: String = ""
     private let loginProfile: String = ""
     
@@ -28,19 +28,23 @@ class ImageFeedUITests: XCTestCase {
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         
         loginTextField.tap()
-        loginTextField.typeText(eMail)
-        webView.swipeUp()
+        loginTextField.typeText("04kat86@gmail.com")
+        
+        let keyboard = app.buttons["Done"]
+        keyboard.tap()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         
         passwordTextField.tap()
-        passwordTextField.typeText(pass)
-        webView.swipeUp()
+        passwordTextField.typeText("1187mLk4576$")
         
-        let buttonLogin = webView.descendants(matching: .button).element
+        keyboard.tap()
         
-        buttonLogin.tap()
+        let loginButton = app.buttons["Login"]
+        loginButton.tap()
+        
+        sleep(5)
         
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
