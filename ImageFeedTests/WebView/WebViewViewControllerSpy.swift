@@ -21,4 +21,3 @@ final class WebViewViewControllerSpy: WebViewControllerProtocol {
     
     func setProgressHidden(_ isHidden: Bool) {}
 }
-

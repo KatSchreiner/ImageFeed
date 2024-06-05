@@ -25,10 +25,11 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     var photos: [Photo] = []
     
-    // MARK: - Overrides Methods
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter = ImagesListViewPresenter(view: self)
+        presenter = ImagesListViewPresenter()
+        presenter?.view = self
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         tableView.delegate = self
@@ -39,6 +40,7 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
         presenter?.fetchPhotosNextPage()
     }
     
+    // MARK: - Overrides Methods
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showSingleImageSegueIdentifier {
             guard let viewController = segue.destination as? SingleImageViewController,
@@ -62,7 +64,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: ImagesListCell.reuseIdentifier,
             for: indexPath) as? ImagesListCell else {
@@ -76,13 +78,13 @@ extension ImagesListViewController: UITableViewDataSource {
         
         cell.cellImage.kf.indicatorType = .activity
         cell.cellImage.kf.setImage(with: URL(string: photo.thumbImageURL)) { result in
-                switch result {
-                case .success(_):
-                    tableView.reloadRows(at: [indexPath], with: .automatic)
-                case .failure(let error):
-                    print("[ImagesListCell:configCell]: - ошибка загрузки изображения: \(error.localizedDescription)")
-                }
+            switch result {
+            case .success(_):
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            case .failure(let error):
+                print("[ImagesListCell:configCell]: - ошибка загрузки изображения: \(error.localizedDescription)")
             }
+        }
         
         cell.configCell(for: cell, with: indexPath, createdAt: photo.createdAt)
         
@@ -97,14 +99,14 @@ extension ImagesListViewController: UITableViewDelegate {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
     
-   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-       let imageSize = photos[indexPath.row].size
-       let imageWidth = tableView.bounds.width - tableView.contentInset.left - tableView.contentInset.right
-       let imageHeight = imageWidth * (imageSize.height / imageSize.width)
-       let padding = tableView.contentInset.top + tableView.contentInset.bottom
-
-       return imageHeight + padding
-   }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let imageSize = photos[indexPath.row].size
+        let imageWidth = tableView.bounds.width - tableView.contentInset.left - tableView.contentInset.right
+        let imageHeight = imageWidth * (imageSize.height / imageSize.width)
+        let padding = tableView.contentInset.top + tableView.contentInset.bottom
+        
+        return imageHeight + padding
+    }
 }
 
 // MARK: ImagesListViewController

@@ -15,14 +15,16 @@ public protocol WebViewPresenterProtocol {
 }
 
 final class WebViewPresenter: WebViewPresenterProtocol {
-    var authHelper: AuthHelperProtocol
+    private let authHelper: AuthHelperProtocol
+    
     init(authHelper: AuthHelperProtocol) {
         self.authHelper = authHelper
     }
+    
     weak var view: WebViewControllerProtocol?
     
     func viewDidLoad() {
-        guard let request = authHelper.authRequest() else { 
+        guard let request = authHelper.authRequest() else {
             assertionFailure("[WebViewPresenter: viewDidLoad] - неверный запрос")
             return }
         
@@ -30,8 +32,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         view?.load(request: request)
     }
     
-    // MARK: - Public Mhetods
-    
+    // MARK: - Public Methods
     func didUpdateProgressValue(_ newValue: Double) {
         let newProgressValue = Float(newValue)
         view?.setProgressValue(newProgressValue)
@@ -48,7 +49,3 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         authHelper.code(from: url)
     }
 }
-
-
-
-

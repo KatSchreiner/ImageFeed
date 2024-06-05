@@ -41,13 +41,11 @@ final class SingleImageViewController: UIViewController {
     }
     
     // MARK: Public Methods
-    
     func imageToURL(fullImageUrl: String) {
         self.fullImageUrl = fullImageUrl
     }
     
     // MARK: Private Methods
-    
     private func loadImage() {
         guard let fullImageUrl = fullImageUrl, let url = URL(string: fullImageUrl) else {
             print("[SingleImageViewController: loadImage] - изображение не загрузилось")

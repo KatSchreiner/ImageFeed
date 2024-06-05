@@ -11,7 +11,6 @@ import UIKit
 final class SplashViewController: UIViewController {
     
     // MARK: - Private Properties
-
     private let tokenStorage = OAuth2TokenStorage()
     
     private var splashLogo: UIImageView = {
@@ -19,14 +18,14 @@ final class SplashViewController: UIViewController {
         let splashLogo = UIImageView(image: imageLogo)
         return splashLogo
     }()
-    
-    // MARK: - Overrides Methods
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSplashLogo()
         self.view.backgroundColor = .ypBlack
     }
-    
+ 
+    // MARK: - Overrides Methods
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -73,8 +72,7 @@ final class SplashViewController: UIViewController {
     }
 }
 
-// MARK: - SplashViewController: AuthViewControllerDelegate
-
+// MARK: - SplashViewController
 extension SplashViewController {
     func goToAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -88,11 +86,10 @@ extension SplashViewController {
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
     }
-    
 }
 
+// MARK: - AuthViewControllerDelegate
 extension SplashViewController: AuthViewControllerDelegate {
-    
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)
         

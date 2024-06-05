@@ -17,8 +17,8 @@ public protocol WebViewControllerProtocol: AnyObject {
 }
 
 final class WebViewViewController: UIViewController & WebViewControllerProtocol {
-    // MARK: - IB Outlets
     
+    // MARK: - IB Outlets
     @IBOutlet private var progressView: UIProgressView!
     @IBOutlet private var webView: WKWebView!
     
@@ -27,15 +27,15 @@ final class WebViewViewController: UIViewController & WebViewControllerProtocol 
     // MARK: - Private Properties
     weak var delegate: WebViewViewControllerDelegate?
     
-    // MARK: - Overrides Methods
-    
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.accessibilityIdentifier = "UnsplashWebView"
         webView.navigationDelegate = self
         presenter?.viewDidLoad()
     }
-    
+   
+    // MARK: - Overrides Methods
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         webView.addObserver(
@@ -60,7 +60,6 @@ final class WebViewViewController: UIViewController & WebViewControllerProtocol 
     }
     
     // MARK: - Public Methods
-    
     func load(request: URLRequest) {
         webView.load(request)
     }
@@ -75,7 +74,6 @@ final class WebViewViewController: UIViewController & WebViewControllerProtocol 
 }
 
 // MARK: - WKNavigationDelegate
-
 extension WebViewViewController: WKNavigationDelegate {
     func webView(
         _ webView: WKWebView,

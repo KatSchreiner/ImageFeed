@@ -7,7 +7,7 @@
 
 import XCTest
 
-class ImageFeedUITests: XCTestCase {
+final class ImageFeedUITests: XCTestCase {
     private let app = XCUIApplication()
     private let email: String = ""
     private let password: String = ""

@@ -20,9 +20,6 @@ public protocol ProfilePresenterProtocol {
 final class ProfileViewPresenter: ProfilePresenterProtocol {
     
     weak var view: ProfileViewControllerProtocol?
-    init(view: ProfileViewControllerProtocol? = nil) {
-        self.view = view
-    }
     
     private var profileImageServiceObserver: NSObjectProtocol?
     

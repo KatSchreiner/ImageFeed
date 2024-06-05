@@ -44,7 +44,7 @@ extension URLSession {
         for request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
     ) -> URLSessionTask {
-
+        
         let task = data(for: request) { (result: Result<Data, Error>) in
             switch result {
             case .success(let data):
@@ -60,10 +60,9 @@ extension URLSession {
             case .failure(_):
                 completion(.failure(NetworkError.urlSessionError))
                 print("Ошибка URLSession: не было получено данных или ответа: \(NetworkError.urlSessionError.localizedDescription)")
-
+                
             }
         }
         return task
     }
 }
-

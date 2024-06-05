@@ -8,7 +8,7 @@
 import Foundation
 
 final class AuthHelper: AuthHelperProtocol {
-    let configuration: AuthConfiguration
+    private let configuration: AuthConfiguration
     
     init(configuration: AuthConfiguration = .standard) {
         self.configuration = configuration
@@ -27,14 +27,14 @@ final class AuthHelper: AuthHelperProtocol {
             assertionFailure("Invalid authorization URL string: \(configuration.authURLString)")
             return nil
         }
-                
-                urlComponents.queryItems = [
-                    URLQueryItem(name: "client_id", value: configuration.accessKey),
-                    URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
-                    URLQueryItem(name: "response_type", value: "code"),
-                    URLQueryItem(name: "scope", value: configuration.accessScope)
-                ]
-                return urlComponents.url
+        
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: configuration.accessKey),
+            URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
+            URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "scope", value: configuration.accessScope)
+        ]
+        return urlComponents.url
     }
     
     func code(from url: URL) -> String? {
@@ -47,7 +47,5 @@ final class AuthHelper: AuthHelperProtocol {
         } else {
             return nil
         }
-    } 
-    
-    
+    }
 }

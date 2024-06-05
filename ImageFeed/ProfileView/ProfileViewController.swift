@@ -10,7 +10,6 @@ import Kingfisher
 
 public protocol ProfileViewControllerProtocol: AnyObject {
     var presenter: ProfilePresenterProtocol? { get set }
-    
     func updateProfileDetails(profileData: Profile)
     func setUserPhoto(url: URL)
 }
@@ -53,7 +52,8 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        presenter = ProfileViewPresenter(view: self)
+        presenter = ProfileViewPresenter()
+        presenter?.view = self
         
         view.backgroundColor = .ypBlack
         [userPhoto, nameLabel, loginLabel, descriptionLabel, logoutButton].forEach { view in
@@ -71,8 +71,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         presenter?.updateAvatar()
     }
     
-    // MARK: - IB Actions
-    
+    // MARK: - IB Actions  
     @objc private func didTapLogoutButton() {
         showLogoutConfirmation() 
     }
@@ -130,6 +129,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     }
 }
 
+// MARK: - ProfileViewController
 extension ProfileViewController {
     func updateProfileDetails(profileData: Profile) {
         DispatchQueue.main.async {

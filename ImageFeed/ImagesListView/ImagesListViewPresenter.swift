@@ -16,10 +16,8 @@ public protocol ImagesListViewPresenterProtocol {
 
 final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
     var view: ImagesListViewControllerProtocol?
+    
     private var imagesListServiceObserver: NSObjectProtocol?
-    init(view: ImagesListViewControllerProtocol? = nil) {
-        self.view = view
-    }
     
     func addNotification() {
         imagesListServiceObserver = NotificationCenter.default.addObserver(
@@ -35,6 +33,4 @@ final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
     func fetchPhotosNextPage() {
         ImagesListService.shared.fetchPhotosNextPage()
     }
-
 }
-

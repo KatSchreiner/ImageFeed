@@ -99,5 +99,4 @@ final class ProfileViewTests: XCTestCase {
         //then
         XCTAssertTrue(viewController.setUserPhotoCalled)
     }
-
 }

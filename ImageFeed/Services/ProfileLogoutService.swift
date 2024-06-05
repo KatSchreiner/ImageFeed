@@ -12,6 +12,7 @@ import SwiftKeychainWrapper
 final class ProfileLogoutService {
     static let shared = ProfileLogoutService()
     private init() { }
+    
     private let authToken = OAuth2TokenStorage()
     
     func logout() {
