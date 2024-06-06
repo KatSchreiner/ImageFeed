@@ -21,4 +21,4 @@ final class ImagesListViewPresenterSpy: ImagesListViewPresenterProtocol {
     func fetchPhotosNextPage() {
         fetchPhotosNextPageCalled = true
     }
-}
+} 

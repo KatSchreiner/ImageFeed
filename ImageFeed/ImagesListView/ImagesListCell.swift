@@ -70,4 +70,4 @@ final class ImagesListCell: UITableViewCell {
         
         likeButton.accessibilityIdentifier = isLiked ? "Active" : "No Active"
     }
-}
+} 

@@ -33,4 +33,4 @@ struct AuthConfiguration {
             authURLString: Constants.unsplashAuthorizeURLString,
             defaultBaseURL: Constants.defaultBaseURL)
     }
-}
+} 

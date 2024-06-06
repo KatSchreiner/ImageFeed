@@ -46,7 +46,7 @@ final class ProfileViewTests: XCTestCase {
         let presenter = ProfileViewPresenterSpy()
         viewController.presenter = presenter
         presenter.view = viewController
-
+        
         //when
         _ = viewController.view
         presenter.updateAvatar()
@@ -61,7 +61,7 @@ final class ProfileViewTests: XCTestCase {
         let presenter = ProfileViewPresenterSpy()
         viewController.presenter = presenter
         presenter.view = viewController
-
+        
         //when
         _ = viewController.view
         presenter.profileLogout()
@@ -76,7 +76,7 @@ final class ProfileViewTests: XCTestCase {
         let presenter = ProfileViewPresenter()
         viewController.presenter = presenter
         presenter.view = viewController
-
+        
         //when
         let profile = Profile(username: "ekaterina", name: "Екатерина Новикова", loginName: "@ekaterina_nov", bio: "Hello, World!")
         viewController.updateProfileDetails(profileData: profile)
@@ -91,7 +91,7 @@ final class ProfileViewTests: XCTestCase {
         let presenter = ProfileViewPresenter()
         viewController.presenter = presenter
         presenter.view = viewController
-
+        
         //when
         let url = Constants.defaultBaseURL
         viewController.setUserPhoto(url: url)
@@ -99,4 +99,4 @@ final class ProfileViewTests: XCTestCase {
         //then
         XCTAssertTrue(viewController.setUserPhotoCalled)
     }
-}
+} 

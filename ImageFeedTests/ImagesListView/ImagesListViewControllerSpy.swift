@@ -15,4 +15,4 @@ final class ImagesListViewControllerSpy: ImagesListViewControllerProtocol {
     func updateTableViewAnimated() {
         updateTableViewAnimatedCalled = true
     }
-}
+} 

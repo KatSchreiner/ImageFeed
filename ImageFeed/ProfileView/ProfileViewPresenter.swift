@@ -48,4 +48,4 @@ final class ProfileViewPresenter: ProfilePresenterProtocol {
     func profileLogout() {
         ProfileLogoutService.shared.logout()
     }
-}
+} 

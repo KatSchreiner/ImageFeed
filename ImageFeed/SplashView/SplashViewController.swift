@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class SplashViewController: UIViewController {
+final class SplashViewController: UIViewController { 
     
     // MARK: - Private Properties
     private let tokenStorage = OAuth2TokenStorage()
@@ -24,7 +24,7 @@ final class SplashViewController: UIViewController {
         setupSplashLogo()
         self.view.backgroundColor = .ypBlack
     }
- 
+    
     // MARK: - Overrides Methods
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

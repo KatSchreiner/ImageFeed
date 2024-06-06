@@ -31,4 +31,4 @@ final class ProfileViewPresenterSpy: ProfilePresenterProtocol {
     func profileLogout() {
         profileLogoutCalled = true
     }
-}
+} 

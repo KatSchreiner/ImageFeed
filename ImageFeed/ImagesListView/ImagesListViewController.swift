@@ -26,7 +26,7 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     var photos: [Photo] = []
     
     // MARK: - View Life Cycles
-    override func viewDidLoad() {
+    override func viewDidLoad() { 
         super.viewDidLoad()
         presenter = ImagesListViewPresenter()
         presenter?.view = self

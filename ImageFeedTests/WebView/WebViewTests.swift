@@ -41,7 +41,6 @@ final class WebViewTests: XCTestCase {
     
     func testProgressVisibleWhenLessThenOne() {
         // given
-        let authHelper = AuthHelper()
         let presenter = WebViewPresenter(authHelper: AuthHelper())
         let progress: Float = 0.6
         
@@ -54,7 +53,6 @@ final class WebViewTests: XCTestCase {
     
     func testProgressHiddenWhenOne() {
         // given
-        let authHelper = AuthHelper()
         let presenter = WebViewPresenter(authHelper: AuthHelper())
         let progress: Float = 1.0
         

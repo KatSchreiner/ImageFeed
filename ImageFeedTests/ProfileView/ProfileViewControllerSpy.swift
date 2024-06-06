@@ -20,4 +20,4 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
     func setUserPhoto(url: URL) {
         setUserPhotoCalled = true
     }
-}
+} 

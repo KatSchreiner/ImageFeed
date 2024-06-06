@@ -62,7 +62,6 @@ final class ProfileImageService {
                     self.avatarURL = profileImageURL
                     completion(.success(profileImageURL))
                     self.queue.async {
-                        // Notification
                         NotificationCenter.default.post(
                             name: ProfileImageService.didChangeNotification,
                             object: self,
