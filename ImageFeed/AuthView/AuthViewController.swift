@@ -16,25 +16,28 @@ protocol AuthViewControllerDelegate: AnyObject {
 final class AuthViewController: UIViewController {
     
     // MARK: - Private Properties
-    
     private let oauth2Service = OAuth2Service.shared
     private let showWebViewIdentifier = "ShowWebView"
     weak var  delegate: AuthViewControllerDelegate?
     
-    // MARK: - Overrides Methods
-    
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         configureBackButton()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    // MARK: - Overrides Methods
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) { 
         if segue.identifier == showWebViewIdentifier {
-            guard let webViewController = segue.destination as? WebViewViewController
+            guard
+                let webViewController = segue.destination as? WebViewViewController
             else {
                 assertionFailure("Failed to prepare for \(showWebViewIdentifier)")
                 return
             }
+            let webViewPresenter = WebViewPresenter(authHelper: AuthHelper())
+            webViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewController
             webViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
@@ -42,7 +45,6 @@ final class AuthViewController: UIViewController {
     }
     
     // MARK: - Private Methods
-    
     private func configureBackButton() {
         navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button")
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button")
@@ -52,9 +54,7 @@ final class AuthViewController: UIViewController {
 }
 
 // MARK: - WebViewViewControllerDelegate
-
 extension AuthViewController: WebViewViewControllerDelegate {
-    
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true)
         UIBlockingProgressHUD.show()
@@ -80,4 +80,3 @@ extension AuthViewController: WebViewViewControllerDelegate {
         dismiss(animated: true)
     }
 }
-

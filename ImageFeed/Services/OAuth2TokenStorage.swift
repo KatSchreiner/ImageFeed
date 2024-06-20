@@ -28,4 +28,4 @@ final class OAuth2TokenStorage {
     func cleanToken() {
         KeychainWrapper.standard.removeObject(forKey: bearerTokenKey)
     }
-}
+} 

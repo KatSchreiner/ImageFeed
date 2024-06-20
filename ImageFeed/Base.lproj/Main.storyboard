@@ -3,7 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -70,7 +70,7 @@
                                                     <rect key="frame" x="16" y="166" width="382" height="30"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="26 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vFF-Wy-J83" userLabel="Date label">
-                                                            <rect key="frame" x="8" y="4" width="94.5" height="18"/>
+                                                            <rect key="frame" x="8" y="4" width="97" height="18"/>
                                                             <accessibility key="accessibilityConfiguration" identifier="dateLabel">
                                                                 <accessibilityTraits key="traits" staticText="YES"/>
                                                             </accessibility>
@@ -163,8 +163,9 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="Qt3-W9-Jlv"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="QOy-6G-OZk"/>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IDd-ph-8NT" userLabel="Back Button">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IDd-ph-8NT" userLabel="Backward">
                                 <rect key="frame" x="9" y="9" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Back Button"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="CvM-Os-Skc"/>
                                     <constraint firstAttribute="width" constant="48" id="gH8-gA-qNu"/>
@@ -237,6 +238,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P2e-SL-zXo">
                                 <rect key="frame" x="16" y="724" width="382" height="48"/>
                                 <color key="backgroundColor" name="YP White"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="f7F-ng-h8S"/>
                                 </constraints>
@@ -283,7 +285,7 @@
         <!--WebView -->
         <scene sceneID="ohW-RC-mFy">
             <objects>
-                <viewController id="eI9-Bg-YaR" userLabel="WebView " customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="eI9-Bg-YaR" userLabel="WebView " customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mao-O7-dRL">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

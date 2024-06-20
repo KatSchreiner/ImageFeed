@@ -30,6 +30,17 @@ final class ImagesListCell: UITableViewCell {
         return imageView
     }()
     
+    // MARK: Override Mhetods
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cellImage.kf.cancelDownloadTask()
+    }
+    
+    // MARK: - IB Actions
+    @IBAction private func likeButtonClicked() {
+        delegate?.imageListCellDidTapLike(self)
+    }
+    
     // MARK: Public Methods
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath, createdAt: Date?) {
         
@@ -56,15 +67,7 @@ final class ImagesListCell: UITableViewCell {
         let image = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
         
         likeButton.setImage(image, for: .normal)
+                
+        likeButton.accessibilityIdentifier = isLiked ? "like button on" : "like button off"
     }
-    
-    @IBAction private func likeButtonClicked() {
-        delegate?.imageListCellDidTapLike(self)
-    }
-    
-    // MARK: Override Mhetods
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        cellImage.kf.cancelDownloadTask()
-    }
-}
+} 

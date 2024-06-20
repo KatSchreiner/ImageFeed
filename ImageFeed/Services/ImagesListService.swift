@@ -12,14 +12,14 @@ final class ImagesListService {
     private init() {}
     
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
-    
+    private var lastLoadedPage: Int?
+    private var isLoading = false
+    private var task: URLSessionTask?
     private (set) var photos: [Photo] = []
+    
     func cleanPhotos() {
         photos = []
     }
-    private var lastLoadedPage: Int?
-    private var isLoading = false // флаг для отслеживания загрузки
-    private var task: URLSessionTask?
     
     private func makePhotosRequest() -> URLRequest? {
         guard let url = URL(string: "https://api.unsplash.com/photos") else {
@@ -121,7 +121,7 @@ final class ImagesListService {
                     
                     if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
                         let photo = self.photos[index]
-
+                        
                         let newPhoto = Photo(
                             id: photo.id,
                             size: photo.size,
@@ -131,7 +131,7 @@ final class ImagesListService {
                             largeImageURL: photo.largeImageURL,
                             isLiked: !photo.isLiked
                         )
-
+                        
                         self.photos[index] = newPhoto
                     }
                     completion(.success(isLiked))
